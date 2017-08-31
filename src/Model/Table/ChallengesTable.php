@@ -5,7 +5,7 @@ use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
-
+use Cake\Database\Schema\TableSchema;
 /**
  * Challenges Model
  *
@@ -24,6 +24,12 @@ use Cake\Validation\Validator;
  */
 class ChallengesTable extends Table
 {
+
+   protected function _initializeSchema(TableSchema $schema){
+        
+        $schema->columnType('details', 'json');
+        return $schema;
+    }
 
     /**
      * Initialize method
@@ -67,18 +73,18 @@ class ChallengesTable extends Table
             ->requirePresence('name', 'create')
             ->notEmpty('name');
 
-        $validator
-            ->scalar('details')
-            ->allowEmpty('details');
+        // $validator
+        //     ->scalar('details')
+        //     ->allowEmpty('details');
 
         $validator
             ->scalar('response')
             ->allowEmpty('response');
 
         $validator
-            ->boolean('active')
-            ->requirePresence('active', 'create')
-            ->notEmpty('active');
+            ->boolean('is_active')
+            ->requirePresence('is_active', 'create')
+            ->notEmpty('is_active');
 
         return $validator;
     }

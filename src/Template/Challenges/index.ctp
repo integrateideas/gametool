@@ -18,7 +18,7 @@
                                         <th scope="col"><?= $this->Paginator->sort('challenge_type_id') ?></th>
                                         <th scope="col"><?= $this->Paginator->sort('name') ?></th>
                                         <th scope="col"><?= $this->Paginator->sort('response') ?></th>
-                                        <th scope="col"><?= $this->Paginator->sort('active') ?></th>
+                                        <th scope="col"><?= $this->Paginator->sort('is_active') ?></th>
                                         <th scope="col"><?= $this->Paginator->sort('created') ?></th>
                                         <th scope="col"><?= $this->Paginator->sort('modified') ?></th>
                                         <th scope="col" class="actions"><?= __('Actions') ?></th>
@@ -31,7 +31,7 @@
                                         <td><?= $challenge->has('challenge_type') ? $this->Html->link($challenge->challenge_type->name, ['controller' => 'ChallengeTypes', 'action' => 'view', $challenge->challenge_type->id]) : '' ?></td>
                                         <td><?= h($challenge->name) ?></td>
                                         <td><?= h($challenge->response) ?></td>
-                                        <td><?= h($challenge->active) ?></td>
+                                        <td><?= h($challenge->is_active) ?></td>
                                         <td><?= h($challenge->created) ?></td>
                                         <td><?= h($challenge->modified) ?></td>
                                         <td class="actions">

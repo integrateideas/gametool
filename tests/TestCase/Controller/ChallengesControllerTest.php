@@ -18,7 +18,10 @@ class ChallengesControllerTest extends IntegrationTestCase
     public $fixtures = [
         'app.challenges',
         'app.challenge_types',
-        'app.user_challenge_responses'
+        'app.user_challenge_responses',
+        'app.users',
+        'app.roles',
+        'app.social_profiles'
     ];
 
     /**

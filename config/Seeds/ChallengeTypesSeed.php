@@ -20,19 +20,29 @@ class ChallengeTypesSeed extends AbstractSeed
     {
         $data = [
                     [ 
-                        'name'    => 'READ THE ARTICLE'
+                        'name'    => 'READ THE ARTICLE',
+                        'created' => date('Y-m-d H:i:s'),
+                        'modified'=> date('Y-m-d H:i:s')
                     ],
                     [ 
-                        'name'    => 'SHARE THE WISDOM'
+                        'name'    => 'SHARE THE WISDOM',
+                        'created' => date('Y-m-d H:i:s'),
+                        'modified'=> date('Y-m-d H:i:s')
                     ],
                     [ 
-                        'name'    => 'FUNNY CAPTION'
+                        'name'    => 'FUNNY CAPTION',
+                        'created' => date('Y-m-d H:i:s'),
+                        'modified'=> date('Y-m-d H:i:s')
                     ],
                     [ 
-                        'name'    => 'FILL IN THE BLANKS'
+                        'name'    => 'FILL IN THE BLANKS',
+                        'created' => date('Y-m-d H:i:s'),
+                        'modified'=> date('Y-m-d H:i:s')
                     ],
                     [ 
-                        'name'    => 'WEEKLY HEALTH TRIVIA'
+                        'name'    => 'WEEKLY HEALTH TRIVIA',
+                        'created' => date('Y-m-d H:i:s'),
+                        'modified'=> date('Y-m-d H:i:s')
                     ],
                 ];
 

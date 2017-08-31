@@ -14,8 +14,12 @@
         <div class="ibox-content">
     <table class="table">
         <tr>
-            <th scope="row"><?= __('Name') ?></th>
-            <td><?= h($user->name) ?></td>
+            <th scope="row"><?= __('First Name') ?></th>
+            <td><?= h($user->first_name) ?></td>
+        </tr>
+        <tr>
+            <th scope="row"><?= __('Last Name') ?></th>
+            <td><?= h($user->last_name) ?></td>
         </tr>
         <tr>
             <th scope="row"><?= __('Email') ?></th>

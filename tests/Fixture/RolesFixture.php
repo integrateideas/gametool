@@ -42,8 +42,8 @@ class RolesFixture extends TestFixture
             'id' => 1,
             'name' => 'Lorem ipsum dolor sit amet',
             'label' => 'Lorem ipsum dolor sit amet',
-            'created' => '2017-08-29 08:12:07',
-            'modified' => '2017-08-29 08:12:07'
+            'created' => '2017-08-29 12:27:09',
+            'modified' => '2017-08-29 12:27:09'
         ],
     ];
 }

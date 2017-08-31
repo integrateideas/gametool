@@ -11,7 +11,7 @@ use Cake\ORM\Entity;
  * @property string $name
  * @property string $details
  * @property string $response
- * @property bool $active
+ * @property bool $is_active
  * @property \Cake\I18n\FrozenTime $created
  * @property \Cake\I18n\FrozenTime $modified
  *

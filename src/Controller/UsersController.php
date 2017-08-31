@@ -2,6 +2,8 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\Core\Configure;
+use Cake\Auth\DefaultPasswordHasher;
 
 /**
  * Users Controller
@@ -12,6 +14,16 @@ use App\Controller\AppController;
  */
 class UsersController extends AppController
 {
+
+    public function initialize()
+    {
+        parent::initialize();
+
+        $this->loadComponent('RequestHandler');
+        $this->loadComponent('Flash');
+        $this->loadComponent('Auth');
+        $this->Auth->allow(['add','logout', 'login']);
+    }
 
     /**
      * Index method
@@ -112,5 +124,67 @@ class UsersController extends AppController
         }
 
         return $this->redirect(['action' => 'index']);
+    }
+
+    // public function login()
+    // {
+    //     $this->set('env', Configure::read('development.env'));
+    //     $this->viewBuilder()->layout('login-admin');
+    //     if ($this->request->is('post')) {
+    //     $user = $this->Auth->identify();
+    //     if ($user) {
+    //         $this->loadModel('Roles');
+    //         $user['role'] = $query = $this->Roles->findById($user['role_id'])->select(['name'])->first();
+    //         $this->Auth->setUser($user);
+    //         return $this->redirect(['controller' => 'Users','action' => 'index']);
+    //     }else{
+    //         $this->Flash->error(__('Invalid username or password, try again'));
+    //     }
+
+    //     }
+    // }
+
+    public function login()
+    {
+        $this->set('env', Configure::read('development.env'));
+        $this->viewBuilder()->layout('login-admin');
+        // pr($this->request); die;
+        if ($this->request->is('post') || (isset($this->request->query['provider']) && !empty($this->request->query['provider']))) {
+        // pr($this->request->data); die;
+
+            if((isset($this->request->query['provider']) && $this->request->query['provider'] =='Facebook')){
+                $this->Auth->config([
+                    'authenticate' => [
+                    'ADmad/HybridAuth.HybridAuth' => [
+                    'hauth_return_to' => Router::url(['controller' => 'Users', 'action' => 'login', 'provider' => $this->request->query['provider']],true)
+                    ]
+                    ]
+                    ]);
+            }else if((isset($this->request->query['provider']) && $this->request->query['provider'] !='Facebook')){
+                $this->Flash->error(__('Unauthorized Access.'));
+            }
+            
+            $user = $this->Auth->identify();
+            // pr($user); die;
+            if ($user) {
+                $this->loadModel('Roles');
+                $user['role'] = $query = $this->Roles->findById($user['role_id'])->select(['name'])->first();
+                $this->Auth->setUser($user);
+                return $this->redirect(['controller' => 'Users','action' => 'index']);
+            }else{
+                $this->Flash->error(__('We are not able to recognize you. Kindly Provide correct credentials.'));
+            }
+        }
+    }
+
+    public function logout()
+    {
+        $this->Auth->logout();
+        return $this->redirect(['action' => 'login']);
+    }
+
+    public function isAuthorized($user)
+    {
+        return true;
     }
 }
