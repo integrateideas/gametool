@@ -15,7 +15,8 @@
                     <thead>
                         <tr>
                                         <th scope="col"><?= $this->Paginator->sort('id') ?></th>
-                                        <th scope="col"><?= $this->Paginator->sort('name') ?></th>
+                                        <th scope="col"><?= $this->Paginator->sort('first_name') ?></th>
+                                        <th scope="col"><?= $this->Paginator->sort('last_name') ?></th>
                                         <th scope="col"><?= $this->Paginator->sort('email') ?></th>
                                         <th scope="col"><?= $this->Paginator->sort('username') ?></th>
                                         <th scope="col"><?= $this->Paginator->sort('uuid') ?></th>
@@ -30,7 +31,8 @@
                         <?php foreach ($users as $user): ?>
                         <tr>
                                         <td><?= $this->Number->format($user->id) ?></td>
-                                        <td><?= h($user->name) ?></td>
+                                        <td><?= h($user->first_name) ?></td>
+                                        <td><?= h($user->last_name) ?></td>
                                         <td><?= h($user->email) ?></td>
                                         <td><?= h($user->username) ?></td>
                                         <td><?= h($user->uuid) ?></td>

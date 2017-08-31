@@ -55,6 +55,10 @@ class ChallengesController extends AppController
     {
         $challenge = $this->Challenges->newEntity();
         if ($this->request->is('post')) {
+            if($this->request->data['challenge_type_id'] == 2 || $this->request->data['challenge_type_id'] == 3 || $this->request->data['challenge_type_id'] == 4){
+                $this->request->data['details'] = null;
+                $this->request->data['response'] = null;
+            }
             $challenge = $this->Challenges->patchEntity($challenge, $this->request->getData());
             if ($this->Challenges->save($challenge)) {
                 $this->Flash->success(__('The challenge has been saved.'));

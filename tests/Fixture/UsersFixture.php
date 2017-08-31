@@ -47,11 +47,11 @@ class UsersFixture extends TestFixture
             'name' => 'Lorem ipsum dolor sit amet',
             'email' => 'Lorem ipsum dolor sit amet',
             'username' => 'Lorem ipsum dolor sit amet',
-            'uuid' => '0f0015d9-00fe-40bb-b7ae-7aad36c95d47',
+            'uuid' => 'd4c5b80a-5301-40db-bcfb-41a50ce6e618',
             'role_id' => 1,
             'password' => 'Lorem ipsum dolor sit amet',
-            'created' => '2017-08-29 08:11:52',
-            'modified' => '2017-08-29 08:11:52'
+            'created' => '2017-08-29 12:23:16',
+            'modified' => '2017-08-29 12:23:16'
         ],
     ];
 }

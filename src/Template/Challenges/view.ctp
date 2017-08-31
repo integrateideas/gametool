@@ -38,8 +38,8 @@
             <td><?= h($challenge->modified) ?></td>
         </tr>
         <tr>
-            <th scope="row"><?= __('Active') ?></th>
-            <td><?= $challenge->active ? __('Yes') : __('No'); ?></td>
+            <th scope="row"><?= __('Is Active') ?></th>
+            <td><?= $challenge->is_active ? __('Yes') : __('No'); ?></td>
         </tr>
     </table> <!-- table end-->
     <div class="col-sm-2">

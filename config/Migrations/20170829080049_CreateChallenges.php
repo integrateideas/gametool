@@ -32,7 +32,7 @@ class CreateChallenges extends AbstractMigration
             'limit' => 255,
             'null' => true,
         ]);
-        $table->addColumn('active', 'boolean', [
+        $table->addColumn('is_active', 'boolean', [
             'default' => null,
             'null' => false,
         ]);

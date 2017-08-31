@@ -5,11 +5,13 @@ use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use Cake\Utility\Text;
 
 /**
  * Users Model
  *
  * @property \App\Model\Table\RolesTable|\Cake\ORM\Association\BelongsTo $Roles
+ * @property |\Cake\ORM\Association\HasMany $SocialProfiles
  * @property \App\Model\Table\UserChallengeResponsesTable|\Cake\ORM\Association\HasMany $UserChallengeResponses
  *
  * @method \App\Model\Entity\User get($primaryKey, $options = [])
@@ -45,9 +47,15 @@ class UsersTable extends Table
             'foreignKey' => 'role_id',
             'joinType' => 'INNER'
         ]);
+        $this->hasMany('SocialProfiles', [
+            'foreignKey' => 'user_id'
+        ]);
         $this->hasMany('UserChallengeResponses', [
             'foreignKey' => 'user_id'
         ]);
+        $this->hasMany('ADmad/HybridAuth.SocialProfiles');
+
+        \Cake\Event\EventManager::instance()->on('HybridAuth.newUser', [$this, 'createUser']);
     }
 
     /**
@@ -63,9 +71,12 @@ class UsersTable extends Table
             ->allowEmpty('id', 'create');
 
         $validator
-            ->scalar('name')
-            ->requirePresence('name', 'create')
-            ->notEmpty('name');
+            ->requirePresence('first_name', 'create')
+            ->notEmpty('first_name');
+
+        $validator
+            ->requirePresence('last_name', 'create')
+            ->notEmpty('last_name');
 
         $validator
             ->email('email')
@@ -78,9 +89,7 @@ class UsersTable extends Table
             ->notEmpty('username');
 
         $validator
-            ->uuid('uuid')
-            ->requirePresence('uuid', 'create')
-            ->notEmpty('uuid');
+            ->allowEmpty('uuid');
 
         $validator
             ->scalar('password')
@@ -104,5 +113,28 @@ class UsersTable extends Table
         $rules->add($rules->existsIn(['role_id'], 'Roles'));
 
         return $rules;
+    }
+
+    public function beforeMarshal( \Cake\Event\Event $event, \ArrayObject $data, \ArrayObject $options){
+       if (!isset($data['uuid'])) {
+           $data['uuid'] = Text::uuid();
+       }
+
+    }
+
+    public function createUser(\Cake\Event\Event $event) {
+        // Entity representing record in social_profiles table
+        $profile = $event->data()['profile'];
+
+        // Make sure here that all the required fields are actually present
+
+        $user = $this->newEntity(['email' => $profile->email]);
+        $user = $this->save($user);
+
+        if (!$user) {
+            throw new \RuntimeException('Unable to save new user');
+        }
+
+        return $user;
     }
 }
