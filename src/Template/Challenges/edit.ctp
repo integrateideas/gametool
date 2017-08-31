@@ -3,7 +3,6 @@
   * @var \App\View\AppV=iew $this
 
   */
-pr($challenge);
 ?>
 <div class="row">
 	<div class="col-lg-12">
