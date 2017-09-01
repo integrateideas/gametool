@@ -23,12 +23,23 @@ class UsersSeed extends AbstractSeed
         $hasher = new DefaultPasswordHasher();
         $data = [
                     [
-                      'first_name'    => 'admin',
-                      'last_name'    => 'admin',
-                      'email'   =>'admin@admin.com',
-                      'username' => 'admin',
+                      'first_name'    => 'james',
+                      'last_name'    => 'james',
+                      'email'   =>'james.kukreja@twinspark.co',
+                      'username' => 'james',
                       'uuid' => '1234567890',
-                      'password'   =>$hasher->hash('12345678'),
+                      'password'   =>$hasher->hash('twinspark'),
+                      'role_id'=>'1',
+                      'created' => '2016-06-15 10:01:27',
+                      'modified'=> '2016-06-15 10:01:27',
+                    ],
+                    [
+                      'first_name'    => 'Integrateideas',
+                      'last_name'    => 'Integrateideas',
+                      'email'   =>'engage@integrateideas.com',
+                      'username' => 'Integrateideas',
+                      'uuid' => '1234567890',
+                      'password'   =>$hasher->hash('IIitb123$'),
                       'role_id'=>'1',
                       'created' => '2016-06-15 10:01:27',
                       'modified'=> '2016-06-15 10:01:27',

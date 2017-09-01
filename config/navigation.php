@@ -6,39 +6,6 @@ return [ 'Menu' =>
                   [
                       
                    'Admin' =>  [
-                          'Users' => [
-                              'link' => '#',
-                              'children' => [
-                                    'User List' => [
-                                        'link' => [
-                                              'controller' => 'Users',
-                                              'action' => 'index'
-                                            ],
-                                          ],
-                                     'Add User' => [
-                                        'link' => ['controller' => 'Users', 
-                                                    'action' => 'add'
-                                                  ],
-                                          ] 
-                              ] 
-                            ],
-                            'Roles' => [
-                              'link' => '#',
-                              'children' => [
-                                    'Roles List' => [
-                                        'link' => [
-                                              'controller' => 'Roles',
-                                              'action' => 'index'
-                                            ],
-                                          ],
-                                      'Add Role' => [
-                                        'link' => [
-                                                   'controller' => 'Roles',
-                                                   'action' => 'add'
-                                                  ],
-                                          ] 
-                                  ] 
-                            ],
                             'Challenges' => [
                               'link' => '#',
                               'children' => [
