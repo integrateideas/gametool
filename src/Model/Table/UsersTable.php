@@ -123,18 +123,6 @@ class UsersTable extends Table
     }
 
     public function createUser(\Cake\Event\Event $event) {
-        // Entity representing record in social_profiles table
-        $profile = $event->data()['profile'];
-
-        // Make sure here that all the required fields are actually present
-
-        $user = $this->newEntity(['email' => $profile->email]);
-        $user = $this->save($user);
-
-        if (!$user) {
-            throw new \RuntimeException('Unable to save new user');
-        }
-
-        return $user;
+       throw new \RuntimeException('Unauthorized Access');
     }
 }

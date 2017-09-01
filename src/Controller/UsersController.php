@@ -4,6 +4,7 @@ namespace App\Controller;
 use App\Controller\AppController;
 use Cake\Core\Configure;
 use Cake\Auth\DefaultPasswordHasher;
+use Cake\Routing\Router;
 
 /**
  * Users Controller
@@ -126,31 +127,11 @@ class UsersController extends AppController
         return $this->redirect(['action' => 'index']);
     }
 
-    // public function login()
-    // {
-    //     $this->set('env', Configure::read('development.env'));
-    //     $this->viewBuilder()->layout('login-admin');
-    //     if ($this->request->is('post')) {
-    //     $user = $this->Auth->identify();
-    //     if ($user) {
-    //         $this->loadModel('Roles');
-    //         $user['role'] = $query = $this->Roles->findById($user['role_id'])->select(['name'])->first();
-    //         $this->Auth->setUser($user);
-    //         return $this->redirect(['controller' => 'Users','action' => 'index']);
-    //     }else{
-    //         $this->Flash->error(__('Invalid username or password, try again'));
-    //     }
-
-    //     }
-    // }
-
     public function login()
     {
         $this->set('env', Configure::read('development.env'));
         $this->viewBuilder()->layout('login-admin');
-        // pr($this->request); die;
         if ($this->request->is('post') || (isset($this->request->query['provider']) && !empty($this->request->query['provider']))) {
-        // pr($this->request->data); die;
 
             if((isset($this->request->query['provider']) && $this->request->query['provider'] =='Facebook')){
                 $this->Auth->config([
@@ -165,12 +146,11 @@ class UsersController extends AppController
             }
             
             $user = $this->Auth->identify();
-            // pr($user); die;
             if ($user) {
                 $this->loadModel('Roles');
                 $user['role'] = $query = $this->Roles->findById($user['role_id'])->select(['name'])->first();
                 $this->Auth->setUser($user);
-                return $this->redirect(['controller' => 'Users','action' => 'index']);
+                return $this->redirect(['controller' => 'Challenges','action' => 'index']);
             }else{
                 $this->Flash->error(__('We are not able to recognize you. Kindly Provide correct credentials.'));
             }
