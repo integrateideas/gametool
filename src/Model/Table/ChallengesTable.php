@@ -6,6 +6,8 @@ use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 use Cake\Database\Schema\TableSchema;
+use Cake\Core\Configure;
+use App\Model\Entity\Challenge;
 /**
  * Challenges Model
  *
@@ -54,6 +56,19 @@ class ChallengesTable extends Table
         $this->hasMany('UserChallengeResponses', [
             'foreignKey' => 'challenge_id'
         ]);
+         $this->addBehavior('Josegonzalez/Upload.Upload', [
+          'image_name' => [
+
+            'path' => Configure::read('ImageUpload.uploadPathForChallengeImages'),
+
+            'fields' => [
+              'dir' => 'image_path'
+            ],
+            'nameCallback' => function ($data, $settings) {
+              return time(). $data['name'];
+            },
+          ],
+        ]);
     }
 
     /**
@@ -76,7 +91,12 @@ class ChallengesTable extends Table
         // $validator
         //     ->scalar('details')
         //     ->allowEmpty('details');
+        $validator
+            ->allowEmpty('image_path');
 
+        $validator
+            ->allowEmpty('image_name');
+        
         $validator
             ->scalar('response')
             ->allowEmpty('response');

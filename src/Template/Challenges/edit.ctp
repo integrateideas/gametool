@@ -9,23 +9,25 @@
 		<div class="ibox float-e-margins">
 			<div class="ibox-content">
 				<div class="challenges form large-9 medium-8 columns content">
-    <?= $this->Form->create($challenge) ?>
+    <?= $this->Form->create($challenge, ['enctype'=>"multipart/form-data"]) ?>
     <fieldset>
         <div class = 'ibox-title'>
             <legend><?= __('Edit Challenge') ?></legend>
         </div>
-        <!-- <?php
-            echo $this->Form->control('challenge_type_id', ['options' => $challengeTypes]);
-            echo $this->Form->control('name');
-            echo $this->Form->control('details');
-            echo $this->Form->control('response');
-            echo $this->Form->control('is_active');
-        ?> -->
         <input type = "hidden" value="<?=$challenge->challenge_type_id?>" name='ch-type' id='ch-type'/>
         <?php
                             echo $this->Form->control('name');
                             echo $this->Form->control('challenge_type_id', ['options' => $challengeTypes, 'empty' => '---Please Select---']);
                             ?>
+                        <div class="form-group">
+                                <?= $this->Form->label('image_path', __('Image Upload'), ['class' => 'col-sm-2 control-label']); ?>
+                                <div class="col-sm-4">
+                                    <div class="img-thumbnail">
+                                        <?= $this->Html->image($challenge->image_url, array('height' => 100, 'width' => 100,'id'=>'upload-img')); ?>
+                                    </div>
+                                    <?= $this->Form->input('image_name', ['accept'=>"image/*",'label' => false,['class' => 'form-control'],'type' => "file",'id'=>'imgChange']); ?>
+                                </div>
+                            </div>
                         <div id = "read-article" >
                             <?php
                                 $question_type = [
@@ -140,4 +142,40 @@ $(document).ready(function() {
         e.preventDefault(); $(this).parent('div').parent('label').remove(); x--;
     })
 });
+
+/**
+* @method uploadImage
+@return null
+*/    
+function uploadImage(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        
+        reader.onload = function (e) {
+            $('#upload-img').attr('src', e.target.result);
+        }
+        
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+$("#imgChange").change(function(){
+    uploadImage(this);
+});
 </script>
+
+<style type ="text/style">
+.img-thumbnail {
+background: #fff none repeat scroll 0 0;
+height: 200px;
+margin: 10px 5px;
+padding: 0;
+position: relative;
+width: 200px;
+}
+.img-thumbnail img {
+border: 1px solid #dcdcdc;
+max-width: 100%;
+object-fit: cover;
+}
+</style>

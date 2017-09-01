@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\Core\Configure;
 
 /**
  * Challenges Controller
@@ -55,11 +56,13 @@ class ChallengesController extends AppController
     {
         $challenge = $this->Challenges->newEntity();
         if ($this->request->is('post')) {
+            // pr($this->request->data); die;
             if($this->request->data['challenge_type_id'] == 2 || $this->request->data['challenge_type_id'] == 3 || $this->request->data['challenge_type_id'] == 4){
                 $this->request->data['details'] = null;
                 $this->request->data['response'] = null;
             }
             $challenge = $this->Challenges->patchEntity($challenge, $this->request->getData());
+            // pr($challenge); die;
             if ($this->Challenges->save($challenge)) {
                 $this->Flash->success(__('The challenge has been saved.'));
 
@@ -84,6 +87,9 @@ class ChallengesController extends AppController
         $challenge = $this->Challenges->get($id, [
             'contain' => []
         ]);
+        //If old image is available, unlink the path(and delete the image) and and  upload image from "upload" folder in webroot.
+        $oldImageName = $challenge->image_name;
+        $path = Configure::read('ImageUpload.uploadPathForChallengeImages');
         if ($this->request->is(['patch', 'post', 'put'])) {
             $challenge = $this->Challenges->patchEntity($challenge, $this->request->getData());
             if ($this->Challenges->save($challenge)) {
