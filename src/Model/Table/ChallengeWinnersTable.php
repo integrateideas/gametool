@@ -7,23 +7,23 @@ use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
- * UserChallengeResponses Model
+ * ChallengeWinners Model
  *
  * @property \App\Model\Table\UsersTable|\Cake\ORM\Association\BelongsTo $Users
+ * @property \App\Model\Table\FbPagesTable|\Cake\ORM\Association\BelongsTo $FbPages
  * @property \App\Model\Table\ChallengesTable|\Cake\ORM\Association\BelongsTo $Challenges
- * @property |\Cake\ORM\Association\BelongsTo $FbPages
  *
- * @method \App\Model\Entity\UserChallengeResponse get($primaryKey, $options = [])
- * @method \App\Model\Entity\UserChallengeResponse newEntity($data = null, array $options = [])
- * @method \App\Model\Entity\UserChallengeResponse[] newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\UserChallengeResponse|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\UserChallengeResponse patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \App\Model\Entity\UserChallengeResponse[] patchEntities($entities, array $data, array $options = [])
- * @method \App\Model\Entity\UserChallengeResponse findOrCreate($search, callable $callback = null, $options = [])
+ * @method \App\Model\Entity\ChallengeWinner get($primaryKey, $options = [])
+ * @method \App\Model\Entity\ChallengeWinner newEntity($data = null, array $options = [])
+ * @method \App\Model\Entity\ChallengeWinner[] newEntities(array $data, array $options = [])
+ * @method \App\Model\Entity\ChallengeWinner|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \App\Model\Entity\ChallengeWinner patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
+ * @method \App\Model\Entity\ChallengeWinner[] patchEntities($entities, array $data, array $options = [])
+ * @method \App\Model\Entity\ChallengeWinner findOrCreate($search, callable $callback = null, $options = [])
  *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
-class UserChallengeResponsesTable extends Table
+class ChallengeWinnersTable extends Table
 {
 
     /**
@@ -36,7 +36,7 @@ class UserChallengeResponsesTable extends Table
     {
         parent::initialize($config);
 
-        $this->setTable('user_challenge_responses');
+        $this->setTable('challenge_winners');
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
 
@@ -46,12 +46,12 @@ class UserChallengeResponsesTable extends Table
             'foreignKey' => 'user_id',
             'joinType' => 'INNER'
         ]);
+        // $this->belongsTo('FbPages', [
+        //     'foreignKey' => 'fb_page_id',
+        //     'joinType' => 'INNER'
+        // ]);
         $this->belongsTo('Challenges', [
             'foreignKey' => 'challenge_id',
-            'joinType' => 'INNER'
-        ]);
-        $this->belongsTo('FbPracticeInformation', [
-            'foreignKey' => 'fb_practice_information_id',
             'joinType' => 'INNER'
         ]);
     }
@@ -68,16 +68,6 @@ class UserChallengeResponsesTable extends Table
             ->integer('id')
             ->allowEmpty('id', 'create');
 
-        $validator
-            ->scalar('response')
-            ->requirePresence('response', 'create')
-            ->notEmpty('response');
-
-        $validator
-            ->boolean('status')
-            ->requirePresence('status', 'create')
-            ->notEmpty('status');
-
         return $validator;
     }
 
@@ -92,7 +82,6 @@ class UserChallengeResponsesTable extends Table
     {
         $rules->add($rules->existsIn(['user_id'], 'Users'));
         $rules->add($rules->existsIn(['challenge_id'], 'Challenges'));
-        $rules->add($rules->existsIn(['fb_page_id'], 'FbPages'));
 
         return $rules;
     }

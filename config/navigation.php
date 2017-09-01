@@ -23,6 +23,23 @@ return [ 'Menu' =>
                                           ] 
                                   ] 
                             ],
+                            'Fb Practice Info' => [
+                              'link' => '#',
+                              'children' => [
+                                    'Practice Info List' => [
+                                        'link' => [
+                                              'controller' => 'FbPracticeInformation',
+                                              'action' => 'index'
+                                            ],
+                                          ],
+                                      'Add Practice Info' => [
+                                        'link' => [
+                                                   'controller' => 'FbPracticeInformation',
+                                                   'action' => 'add'
+                                                  ],
+                                          ] 
+                                  ] 
+                            ],
                         ],
                 ]
         ];
