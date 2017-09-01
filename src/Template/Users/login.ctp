@@ -1,4 +1,4 @@
-<?php
+<!-- <?php
 /**
   * @var \App\View\AppView $this
   */
@@ -29,4 +29,41 @@ $this->Form->setTemplates($loginFormTemplate);
         <?= $this->Form->end() ?>
         <?= $this->Form->postLink('Login with Facebook',['controller' => 'Users', 'action' => 'login', '?' => ['provider' => 'Facebook']], ['class' => 'btn btn-success', 'style' => 'margin-top:-90px; width: 260px;']); ?>   
         <p class="m-t"> <small>Inspinia we app framework base on Bootstrap 3 &copy; 2014</small> </p>
+    </div> -->
+<!-- <?php if($env == 'dev'){ ?>
+<div class="users form">
+<?=$this->Flash->render() ?>
+<?= $this->Form->create() ?>
+    <fieldset>
+        <legend><?= __('Please enter your email and password') ?></legend>
+        <?= $this->Form->control('email',['required'=>'required']) ?>
+        <?= $this->Form->control('password',['required'=>'required']) ?>
+    </fieldset>
+<?= $this->Form->button(__('Login')); ?>
+<?= $this->Form->end() ?>
+</div>
+<?php } ?> -->
+
+
+<div class="middle-box text-center loginscreen animated fadeInDown">
+    <div>
+        <h3>Welcome to Trivia Game</h3>
+        <div class="users form">
+            <?= $this->Form->postLink(
+                'Login With Facebook',$this->Url->build(['controller' => 'Users', 'action' => 'login','?' => ['provider' => 'Facebook']],true)
+            ,['class' => "btn btn-success"]); ?>
+        </div>
+        <p class="m-t"> <small>Twinspark Technologies &copy; <?php echo  date("Y");?></small> </p>
     </div>
+</div>
+<style type="text/css">
+    .ibox-content{
+        background-color: ;
+        border-color: #e7eaec;
+        border-image: none;
+        border-style: inherit;
+        border-width: 1px 0;
+        color: inherit;
+        padding: 0;
+    }
+</style>
