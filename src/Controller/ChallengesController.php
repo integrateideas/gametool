@@ -117,4 +117,34 @@ class ChallengesController extends AppController
 
         return $this->redirect(['action' => 'index']);
     }
+
+    public function triviaWinner(){
+        
+        $this->loadModel('UserChallengeResponses');
+        $selectedWinneres = $this->UserChallengeResponses->find()
+                                                         ->contain('FbPracticeInformation')
+                                                         ->all()
+                                                         ->groupBy('fb_practice_information_id')
+                                                         ->toArray();
+
+        $data = [];
+        foreach ($selectedWinneres as $key => $value) {
+
+            $getRandomWinner = array_rand($value);
+            $result = $value[$getRandomWinner];
+            $data[] = [
+                        'user_id' => $result->user_id,
+                        'fb_practice_information_id'=> $result->fb_practice_information_id,
+                        'challenge_id'=>$result->challenge_id   
+                    ];
+        }
+         
+        $this->loadModel('ChallengeWinners');
+        $triviaWinner = $this->ChallengeWinners->newEntities($data);
+        $triviaWinner = $this->ChallengeWinners->patchEntities($triviaWinner, $data);
+
+        if($this->ChallengeWinners->saveMany($triviaWinner)){
+                pr('here');die;
+        }   
+    }
 }
