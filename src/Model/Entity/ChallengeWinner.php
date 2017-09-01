@@ -4,21 +4,20 @@ namespace App\Model\Entity;
 use Cake\ORM\Entity;
 
 /**
- * UserChallengeResponse Entity
+ * ChallengeWinner Entity
  *
  * @property int $id
  * @property int $user_id
+ * @property int $fb_page_id
  * @property int $challenge_id
- * @property string $response
- * @property bool $status
  * @property \Cake\I18n\FrozenTime $created
  * @property \Cake\I18n\FrozenTime $modified
- * @property int $fb_page_id
  *
  * @property \App\Model\Entity\User $user
+ * @property \App\Model\Entity\FbPage $fb_page
  * @property \App\Model\Entity\Challenge $challenge
  */
-class UserChallengeResponse extends Entity
+class ChallengeWinner extends Entity
 {
 
     /**
