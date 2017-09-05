@@ -2,7 +2,7 @@
 namespace App\Model\Entity;
 
 use Cake\ORM\Entity;
-
+use Cake\Routing\Router;
 /**
  * Challenge Entity
  *
@@ -34,4 +34,16 @@ class Challenge extends Entity
         '*' => true,
         'id' => false
     ];
+
+      protected function _getImageUrl()
+    {
+        // pr('www'); die();
+        if(isset($this->_properties['image_name']) && !empty($this->_properties['image_name'])) {
+            $url = Router::url('/challenge_images/'.$this->_properties['image_name'],true);
+        }else{
+            $url = Router::url('/img/default-img.jpeg',true);
+        }
+        return $url;
+
+    }
 }
