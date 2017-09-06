@@ -21,6 +21,7 @@ class ChallengesController extends AppController
      */
     public function index()
     {
+        $this->viewBuilder()->layout('facebookuser');
         $this->paginate = [
             'contain' => ['ChallengeTypes']
         ];
