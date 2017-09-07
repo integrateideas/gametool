@@ -9,9 +9,8 @@ use Cake\Validation\Validator;
 /**
  * UserChallengeResponses Model
  *
- * @property \App\Model\Table\UsersTable|\Cake\ORM\Association\BelongsTo $Users
  * @property \App\Model\Table\ChallengesTable|\Cake\ORM\Association\BelongsTo $Challenges
- * @property |\Cake\ORM\Association\BelongsTo $FbPages
+ * @property |\Cake\ORM\Association\BelongsTo $FbPracticeInformations
  *
  * @method \App\Model\Entity\UserChallengeResponse get($primaryKey, $options = [])
  * @method \App\Model\Entity\UserChallengeResponse newEntity($data = null, array $options = [])
@@ -42,10 +41,6 @@ class UserChallengeResponsesTable extends Table
 
         $this->addBehavior('Timestamp');
 
-        $this->belongsTo('Users', [
-            'foreignKey' => 'user_id',
-            'joinType' => 'INNER'
-        ]);
         $this->belongsTo('Challenges', [
             'foreignKey' => 'challenge_id',
             'joinType' => 'INNER'
@@ -69,6 +64,16 @@ class UserChallengeResponsesTable extends Table
             ->allowEmpty('id', 'create');
 
         $validator
+            ->scalar('identifier_type')
+            ->requirePresence('identifier_type', 'create')
+            ->notEmpty('identifier_type');
+
+        $validator
+            ->scalar('identifier_value')
+            ->requirePresence('identifier_value', 'create')
+            ->notEmpty('identifier_value');
+
+        $validator
             ->scalar('response')
             ->requirePresence('response', 'create')
             ->notEmpty('response');
@@ -90,9 +95,8 @@ class UserChallengeResponsesTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
-        $rules->add($rules->existsIn(['user_id'], 'Users'));
         $rules->add($rules->existsIn(['challenge_id'], 'Challenges'));
-        $rules->add($rules->existsIn(['fb_page_id'], 'FbPages'));
+        $rules->add($rules->existsIn(['fb_practice_information_id'], 'FbPracticeInformation'));
 
         return $rules;
     }

@@ -17,6 +17,7 @@
         <input type = "hidden" value="<?=$challenge->challenge_type_id?>" name='ch-type' id='ch-type'/>
         <?php
                             echo $this->Form->control('name');
+                            echo $this->Form->control('instruction');
                             echo $this->Form->control('challenge_type_id', ['options' => $challengeTypes, 'empty' => '---Please Select---']);
                             ?>
                         <div class="form-group">

@@ -87,6 +87,10 @@ class ChallengesTable extends Table
             ->scalar('name')
             ->requirePresence('name', 'create')
             ->notEmpty('name');
+         $validator
+            ->scalar('instruction')
+            ->requirePresence('instruction', 'create')
+            ->notEmpty('instruction');
 
         // $validator
         //     ->scalar('details')

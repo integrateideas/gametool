@@ -9,8 +9,10 @@ use Cake\Validation\Validator;
 /**
  * FbPracticeInformation Model
  *
- * @property \App\Model\Table\FbPagesTable|\Cake\ORM\Association\BelongsTo $FbPages
- * @property \App\Model\Table\BuzzydocVendorsTable|\Cake\ORM\Association\BelongsTo $BuzzydocVendors
+ * @property |\Cake\ORM\Association\BelongsTo $FbPages
+ * @property |\Cake\ORM\Association\BelongsTo $BuzzydocVendors
+ * @property |\Cake\ORM\Association\HasMany $ChallengeWinners
+ * @property |\Cake\ORM\Association\HasMany $UserChallengeResponses
  *
  * @method \App\Model\Entity\FbPracticeInformation get($primaryKey, $options = [])
  * @method \App\Model\Entity\FbPracticeInformation newEntity($data = null, array $options = [])
@@ -49,6 +51,12 @@ class FbPracticeInformationTable extends Table
         //     'foreignKey' => 'buzzydoc_vendor_id',
         //     'joinType' => 'INNER'
         // ]);
+        $this->hasMany('ChallengeWinners', [
+            'foreignKey' => 'fb_practice_information_id'
+        ]);
+        $this->hasMany('UserChallengeResponses', [
+            'foreignKey' => 'fb_practice_information_id'
+        ]);
     }
 
     /**
@@ -85,8 +93,8 @@ class FbPracticeInformationTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
-        // $rules->add($rules->existsIn(['fb_page_id'], 'FbPages'));
-        // $rules->add($rules->existsIn(['buzzydoc_vendor_id'], 'BuzzydocVendors'));
+        $rules->add($rules->existsIn(['fb_page_id'], 'FbPages'));
+        $rules->add($rules->existsIn(['buzzydoc_vendor_id'], 'BuzzydocVendors'));
 
         return $rules;
     }
