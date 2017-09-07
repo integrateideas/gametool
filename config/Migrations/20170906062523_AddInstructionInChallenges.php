@@ -1,7 +1,7 @@
 <?php
 use Migrations\AbstractMigration;
 
-class AddCardNumberToUserChallengeResponses extends AbstractMigration
+class AddInstructionInChallenges extends AbstractMigration
 {
     /**
      * Change Method.
@@ -12,10 +12,10 @@ class AddCardNumberToUserChallengeResponses extends AbstractMigration
      */
     public function change()
     {
-        $table = $this->table('user_challenge_responses');
-        $table->addColumn('card_number', 'integer', [
+        $table = $this->table('challenges');
+        $table->addColumn('instruction', 'string', [
             'default' => null,
-            'limit' => 11,
+            'limit' => 255,
             'null' => true,
         ]);
         $table->update();

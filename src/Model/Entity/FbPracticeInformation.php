@@ -8,14 +8,11 @@ use Cake\ORM\Entity;
  *
  * @property int $id
  * @property string $practice_name
- * @property int $fb_page_id
+ * @property string $fb_page_id
  * @property int $buzzydoc_vendor_id
  * @property bool $status
  * @property \Cake\I18n\FrozenTime $created
  * @property \Cake\I18n\FrozenTime $modified
- *
- * @property \App\Model\Entity\FbPage $fb_page
- * @property \App\Model\Entity\BuzzydocVendor $buzzydoc_vendor
  */
 class FbPracticeInformation extends Entity
 {

@@ -13,10 +13,15 @@ class CreateUserChallengeResponses extends AbstractMigration
     public function change()
     {
         $table = $this->table('user_challenge_responses');
-        $table->addColumn('user_id', 'integer', [
+        $table->addColumn('identifier_type', 'string', [
             'default' => null,
             'limit' => 11,
             'null' => false,
+        ]);
+        $table->addColumn('identifier_value', 'string', [
+            'default' => null,
+            'limit' => 11,
+            'null' => true,
         ]);
         $table->addColumn('challenge_id', 'integer', [
             'default' => null,

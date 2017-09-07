@@ -51,38 +51,55 @@ class UserChallengeResponsesController extends AppController
      *
      * @return \Cake\Http\Response|null Redirects on successful add, renders view otherwise.
      */
-    public function add($challengeId)
+    public function add()
     {
         //find challenge by id from challenge table and check that challenge is active or inactive if its active then compare user response with the correct responses, and  save user challenge data in user challenge response table if they give correct response. 
+        $this->request->data = $this->request->data['data'];
+        // pr($this->request->data); die;
+        $challengeId = $this->request->data['challenge_id'];
         $userChallengeResponse = $this->UserChallengeResponses->newEntity(); 
         $challenge =  $this->UserChallengeResponses->Challenges->findById($challengeId)
                                                            ->where(['is_active' => true])
                                                            ->contain(['ChallengeTypes'])
                                                            ->first();
-        $this->request->data['user_id'] = $this->Auth->user('id');
+
+        $this->loadModel('FbPracticeInformation');
+        $fbPracticeInfoId = $this->FbPracticeInformation->findByFbPageId($this->request->data['fb_page_id'])->first();
+        $this->request->data['fb_practice_information_id'] = $fbPracticeInfoId->id;
+
+        // $this->request->data['user_id'] = $this->Auth->user('id');
+
+        // $this->request->data['user_id'] = $this->Auth->user('id');
         if ($this->request->is('post')) {
             if($challenge){
                  $challengeType = $challenge->challenge_type;
-                 if($challengeType->name == "READ THE ARTICLE" && $challengeType->name == "WEEKLY HEALTH TRIVIA"){
+                 // pr($challengeType); die;
+                 if($challengeType->name == "READ THE ARTICLE" || $challengeType->name == "WEEKLY HEALTH TRIVIA"){
                     //compare user response
                     if($this->request->data['response'] == $challenge->response){
                         $this->request->data['status'] = true;
+                    }else{
+                        $response = ['message' => "You failed!!, Please try again"];
+                        return $this->redirect(['controller' => 'Challenges', 'action' => 'activeChallenge']);
+                        // pr($response); die;
                     }
                   }else{
                         $this->request->data['status'] = true;
                   }
-                $userChallengeResponse = $this->UserChallengeResponses->patchEntity($userChallengeResponse, $this->request->getData());
-                if ($this->UserChallengeResponses->save($userChallengeResponse)) {
-                    $this->Flash->success(__('Challenge Completed.'));
-                    return $this->redirect(['action' => 'index']);
+                if(isset($this->request->data['status'])){
+                    $userChallengeResponse = $this->UserChallengeResponses->patchEntity($userChallengeResponse, $this->request->getData());
+                    if ($this->UserChallengeResponses->save($userChallengeResponse)) {
+                        $response = ['message' => "Challenge Completed"];
+                        return $this->redirect(['controller' => 'Challenges', 'action' => 'activeChallenge']);
+                    }
+                    $this->Flash->error(__('Something went wrong!!. Please, try again.'));
                 }
-                $this->Flash->error(__('Something went wrong!!. Please, try again.'));
              }
         }
-        // $users = $this->UserChallengeResponses->Users->find('list', ['limit' => 200]);
-        // $challenges = $this->UserChallengeResponses->Challenges->find('list', ['limit' => 200]);
-        $this->set(compact('userChallengeResponse', 'users', 'challenges'));
-        $this->set('_serialize', ['userChallengeResponse']);
+        $this->set(compact('response'));
+        $this->set('_serialize', ['response']);
+        // $this->set(compact('userChallengeResponse'));
+        // $this->set('_serialize', ['userChallengeResponse']);
     }
 
     /**

@@ -75,6 +75,29 @@ Router::scope('/', function (RouteBuilder $routes) {
     $routes->fallbacks(DashedRoute::class);
 });
 
+Router::prefix('api', function ($routes) {
+
+
+  // $routes->connect('/projects/dashboard',array('controller'=>'Projects', 'action'=>'dashboard',"_method" => "GET"),
+  // array('pass' => array('id'), 'id'=>'[\d]+'));
+
+        $routes->resources('UserChallengePages', [
+            'map' => ['view' => ['action' => 'getActiveChallengeData', 'method' => 'GET']]
+            ]);
+        // $routes->resources('projectServiceTemplates', [
+        //     'map' => ['add' => ['action' => 'add', 'method' => 'POST']]
+        //     ]);
+        // $routes->resources('Trackers', [
+        //     'map' => ['edit' => ['action' => 'edit', 'method' => 'PUT'],
+        //               'view' => ['action' => 'view' , 'method' => 'GET'],
+        //               'index' => ['action' => 'index' , 'method' => 'GET']]
+        //     ]);
+        // $routes->resources('TodoLists', [
+        //     'map' => ['myWork' => ['action' => 'myWork', 'method' => 'GET']]
+        //     ]);
+ $routes->fallbacks('InflectedRoute');
+});
+
 /**
  * Load all plugin routes. See the Plugin documentation on
  * how to customize the loading of plugin routes.

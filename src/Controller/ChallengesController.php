@@ -3,6 +3,7 @@ namespace App\Controller;
 
 use App\Controller\AppController;
 use Cake\Core\Configure;
+use Cake\Routing\Router;
 
 /**
  * Challenges Controller
@@ -21,7 +22,7 @@ class ChallengesController extends AppController
      */
     public function index()
     {
-        // $this->viewBuilder()->layout('facebookuser');
+        
         $this->paginate = [
             'contain' => ['ChallengeTypes']
         ];
@@ -58,7 +59,7 @@ class ChallengesController extends AppController
         $challenge = $this->Challenges->newEntity();
         if ($this->request->is('post')) {
             // pr($this->request->data); die;
-            if($this->request->data['challenge_type_id'] == 2 || $this->request->data['challenge_type_id'] == 3 || $this->request->data['challenge_type_id'] == 4){
+            if($this->request->data['challenge_type_id'] == 3 || $this->request->data['challenge_type_id'] == 4){
                 $this->request->data['details'] = null;
                 $this->request->data['response'] = null;
             }
@@ -92,6 +93,7 @@ class ChallengesController extends AppController
         $oldImageName = $challenge->image_name;
         $path = Configure::read('ImageUpload.uploadPathForChallengeImages');
         if ($this->request->is(['patch', 'post', 'put'])) {
+            // pr($this->request->data); die;
             $challenge = $this->Challenges->patchEntity($challenge, $this->request->getData());
             if ($this->Challenges->save($challenge)) {
                 $this->Flash->success(__('The challenge has been saved.'));
@@ -153,5 +155,19 @@ class ChallengesController extends AppController
         if($this->ChallengeWinners->saveMany($triviaWinner)){
                 pr('here');die;
         }   
+    }
+
+    public function activeChallenge(){
+        $this->viewBuilder()->layout('facebookuser');
+        $activeChallenge = $this->Challenges->find()
+                                            ->where(['is_active IS NOT' => 0])
+                                            ->first();
+        $image_url = Router::url('/', true);
+        $image_url = $image_url.$activeChallenge->image_path.'/'.$activeChallenge->image_name;
+        $url = Router::url(['controller'=>'Challenges','action'=>'activeChallenge'],true);
+        $activeChallenge->url = $url;
+        $activeChallenge->image_url = $image_url;                                
+        $this->set(compact('activeChallenge'));
+        $this->set('_serialize', ['activeChallenge']);
     }
 }

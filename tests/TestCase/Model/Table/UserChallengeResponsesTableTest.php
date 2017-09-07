@@ -27,8 +27,10 @@ class UserChallengeResponsesTableTest extends TestCase
         'app.user_challenge_responses',
         'app.users',
         'app.roles',
+        'app.social_profiles',
         'app.challenges',
-        'app.challenge_types'
+        'app.challenge_types',
+        'app.fb_practice_information'
     ];
 
     /**

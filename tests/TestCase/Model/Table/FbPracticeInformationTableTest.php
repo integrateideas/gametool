@@ -24,9 +24,7 @@ class FbPracticeInformationTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'app.fb_practice_information',
-        'app.fb_pages',
-        'app.buzzydoc_vendors'
+        'app.fb_practice_information'
     ];
 
     /**

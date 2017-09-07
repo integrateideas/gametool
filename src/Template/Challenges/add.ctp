@@ -4,10 +4,10 @@
   */
 ?>
 <div class="row">
-	<div class="col-lg-12">
-		<div class="ibox float-e-margins">
-			<div class="ibox-content">
-				<div class="challenges form large-9 medium-8 columns content">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-content">
+                <div class="challenges form large-9 medium-8 columns content">
                     <?= $this->Form->create($challenge , ['enctype'=>"multipart/form-data"]) ?>
                     <fieldset>
                         <div class = 'ibox-title'>
@@ -15,8 +15,14 @@
                         </div>
                         <?php
                             echo $this->Form->control('name');
+                            echo $this->Form->control('instruction');
                             echo $this->Form->control('challenge_type_id', ['options' => $challengeTypes, 'empty' => '---Please Select---']);
                             ?>
+                            <div id = "share-wisdom" style = "display: none;">
+                                <?php
+                                    echo $this->Form->control('details.topic');
+                                ?>
+                            </div>
                             <div class="form-group">
                                 <?= $this->Form->label('image_path', __('Image Upload'), ['class' => 'col-sm-2 control-label']); ?>
                                 <div class="col-sm-4">
@@ -77,9 +83,9 @@
                     <?= $this->Form->end() ?>
                 </div>
 
-			</div>
-		</div>
-	</div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script type="text/javascript">
@@ -91,18 +97,22 @@ $(document).on('change', 'select', function() {
     if(opt.value == 1){
         document.getElementById('read-article').style.display = 'block';
         document.getElementById('fill-in-blanks').style.display = 'block';
+        document.getElementById('share-wisdom').style.display = 'none';
     }
     else if(opt.value == 2){
+        document.getElementById('share-wisdom').style.display = 'block';
         document.getElementById('read-article').style.display = 'none';
         document.getElementById('fill-in-blanks').style.display = 'none';
     }
     else if(opt.value == 3 ){
         document.getElementById('read-article').style.display = 'none';
         document.getElementById('fill-in-blanks').style.display = 'none';
+        document.getElementById('share-wisdom').style.display = 'none';
     }
     else if(opt.value == 4 || opt.value == 5){
         document.getElementById('read-article').style.display = 'block';
         document.getElementById('fill-in-blanks').style.display = 'none';
+        document.getElementById('share-wisdom').style.display = 'none';
     }
     else if(opt.value == "Multiple Choice"){
         document.getElementById('multiple').style.display = 'block';
@@ -166,4 +176,3 @@ max-width: 100%;
 object-fit: cover;
 }
 </style>
-
