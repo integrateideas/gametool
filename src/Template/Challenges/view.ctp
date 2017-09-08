@@ -42,12 +42,12 @@
             <td><?= $challenge->is_active ? __('Yes') : __('No'); ?></td>
         </tr>
     </table> <!-- table end-->
-    <div class="col-sm-2">
+    <!-- <div class="col-sm-2">
         <h4><?= __('Details') ?></h4>
-    </div>
-    <div class="col-sm-10">
+    </div> -->
+    <!-- <div class="col-sm-10">
         <?= $this->Text->autoParagraph(h($challenge->details)); ?>
-    </div>
+    </div> -->
     </div> <!-- ibox-content end -->
     </div> <!-- ibox end-->
     </div><!-- col-lg-12 end-->
