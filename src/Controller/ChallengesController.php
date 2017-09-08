@@ -64,7 +64,6 @@ class ChallengesController extends AppController
                 $this->request->data['response'] = null;
             }
             $challenge = $this->Challenges->patchEntity($challenge, $this->request->getData());
-            // pr($challenge); die;
             if ($this->Challenges->save($challenge)) {
                 $this->Flash->success(__('The challenge has been saved.'));
 

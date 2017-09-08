@@ -44,6 +44,9 @@
             <?php }else if($activeChallenge->challenge_type_id == 2){ 
                     if(isset($activeChallenge->details['topic'])) {
                 ?>
+                <div class="m-t-md text-center">
+                    <h2><b><?= h($activeChallenge->details['topic']) ?></b></h2>
+                </div>
                 <div class="form-group text required">
                     <h3 class="col-sm-2 col-sm-offset-2">Your Response</h3>
                     <div class="col-sm-8"><input type="text" id="name" maxlength="255" required="required" name="response" class="form-control">
