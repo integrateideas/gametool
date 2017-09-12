@@ -7,14 +7,14 @@ use Cake\ORM\Entity;
  * ChallengeWinner Entity
  *
  * @property int $id
- * @property int $user_id
- * @property int $fb_page_id
+ * @property string $fb_practice_information_id
  * @property int $challenge_id
  * @property \Cake\I18n\FrozenTime $created
  * @property \Cake\I18n\FrozenTime $modified
+ * @property string $identifier_type
+ * @property string $identifier_value
  *
  * @property \App\Model\Entity\User $user
- * @property \App\Model\Entity\FbPage $fb_page
  * @property \App\Model\Entity\Challenge $challenge
  */
 class ChallengeWinner extends Entity

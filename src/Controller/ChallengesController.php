@@ -5,7 +5,7 @@ use App\Controller\AppController;
 use Cake\Core\Configure;
 use Cake\Routing\Router;
 use Cake\Cache\Cache;
-
+use Cake\Collection\Collection;
 /**
  * Challenges Controller
  *
@@ -133,13 +133,13 @@ class ChallengesController extends AppController
     }
 
     // public function triviaWinner(){
-
+        
     //     $this->loadModel('UserChallengeResponses');
     //     $selectedWinneres = $this->UserChallengeResponses->find()
-    //     ->contain('FbPracticeInformation')
-    //     ->all()
-    //     ->groupBy('fb_practice_information_id')
-    //     ->toArray();
+    //                                                      ->contain('FbPracticeInformation')
+    //                                                      ->all()
+    //                                                      ->groupBy('fb_practice_information_id')
+    //                                                      ->toArray();
 
     //     $data = [];
     //     foreach ($selectedWinneres as $key => $value) {
@@ -147,20 +147,68 @@ class ChallengesController extends AppController
     //         $getRandomWinner = array_rand($value);
     //         $result = $value[$getRandomWinner];
     //         $data[] = [
-    //         'user_id' => $result->user_id,
-    //         'fb_practice_information_id'=> $result->fb_practice_information_id,
-    //         'challenge_id'=>$result->challenge_id   
-    //         ];
+    //                     'user_id' => $result->user_id,
+    //                     'fb_practice_information_id'=> $result->fb_practice_information_id,
+    //                     'challenge_id'=>$result->challenge_id   
+    //                 ];
     //     }
-
     //     $this->loadModel('ChallengeWinners');
     //     $triviaWinner = $this->ChallengeWinners->newEntities($data);
     //     $triviaWinner = $this->ChallengeWinners->patchEntities($triviaWinner, $data);
 
     //     if($this->ChallengeWinners->saveMany($triviaWinner)){
-    //         pr('here');die;
+
+    //             pr('here');die;
     //     }   
     // }
+
+     public function triviaWinner(){
+        $this->loadModel('UserChallengeResponses');
+        // active challenge id
+
+        // find active challenge from challenge table and then find users from user challenge response table corresponding to active challenge id
+ 
+        $userResponses = $this->UserChallengeResponses->findByChallengeId($challengeId)
+                                             ->where(['status' => 1])
+                                             ->groupBy('fb_practice_information_id')
+                                             ->toArray();
+
+        $this->loadModel('ChallengeWinners'); 
+        $challengeWinners = $this->ChallengeWinners->find()
+                                                   ->select(['fb_practice_information_id','identifier_value','identifier_type','created'])
+                                                   ->groupBy('fb_practice_information_id')
+                                                   ->toArray();
+
+            // pr($challengeWinners);die;
+        // $triviaWinner = [];                                            
+        foreach ($userResponses as $key => $response) {
+            $winnerArray = isset($challengeWinners[$key]) ? $challengeWinners[$key] : null;
+            // pr($winnerArray); die;
+            if(!$winnerArray){
+                //$triviaWinner[$key]= select random winner
+            }else{
+                foreach ($response as $value) {
+                    foreach ($winnerArray as $winner) {
+                        // pr($winner);
+                        if($value->identifier_type === $winner->identifier_type &&  $value->identifier_value === $winner->identifier_value){
+                            $triviaWinner[] = $winner;
+                        }else{
+                            //isme vo winner declare kiya jayega jiski entry abhi tk challenge winner mein nahi ho rakhi kisi practice k corresponding.
+                        } 
+                    }
+                }
+            }
+        }
+
+        // pr($triviaWinner); die;
+        // //pr(asort($triviaWinner)); die;
+        // $win = $triviaWinner;
+        // asort($win);
+        // foreach($win as $x => $value) {
+        //     echo "Key=" . $value->identifier_value . ", Value=" . $value->created;
+        //     echo "<br>";
+        // }
+    }
 
     public function activeChallenge(){
         $this->viewBuilder()->layout('facebookuser');
