@@ -9,10 +9,11 @@ use Cake\Validation\Validator;
 /**
  * FbPracticeInformation Model
  *
- * @property |\Cake\ORM\Association\BelongsTo $FbPages
+ * @property |\Cake\ORM\Association\BelongsTo $Pages
+ * @property |\Cake\ORM\Association\BelongsTo $Users
  * @property |\Cake\ORM\Association\BelongsTo $BuzzydocVendors
- * @property |\Cake\ORM\Association\HasMany $ChallengeWinners
- * @property |\Cake\ORM\Association\HasMany $UserChallengeResponses
+ * @property \App\Model\Table\ChallengeWinnersTable|\Cake\ORM\Association\HasMany $ChallengeWinners
+ * @property \App\Model\Table\UserChallengeResponsesTable|\Cake\ORM\Association\HasMany $UserChallengeResponses
  *
  * @method \App\Model\Entity\FbPracticeInformation get($primaryKey, $options = [])
  * @method \App\Model\Entity\FbPracticeInformation newEntity($data = null, array $options = [])
@@ -43,13 +44,16 @@ class FbPracticeInformationTable extends Table
 
         $this->addBehavior('Timestamp');
 
-        // $this->belongsTo('FbPages', [
-        //     'foreignKey' => 'fb_page_id',
+        // $this->belongsTo('Pages', [
+        //     'foreignKey' => 'page_id',
         //     'joinType' => 'INNER'
         // ]);
+        $this->belongsTo('Users', [
+            'foreignKey' => 'user_id',
+            'joinType' => 'INNER'
+        ]);
         // $this->belongsTo('BuzzydocVendors', [
-        //     'foreignKey' => 'buzzydoc_vendor_id',
-        //     'joinType' => 'INNER'
+        //     'foreignKey' => 'buzzydoc_vendor_id'
         // ]);
         $this->hasMany('ChallengeWinners', [
             'foreignKey' => 'fb_practice_information_id'
@@ -73,8 +77,12 @@ class FbPracticeInformationTable extends Table
 
         $validator
             ->scalar('practice_name')
-            ->requirePresence('practice_name', 'create')
-            ->notEmpty('practice_name');
+            ->allowEmpty('practice_name');
+
+        $validator
+            ->scalar('page_name')
+            ->requirePresence('page_name', 'create')
+            ->notEmpty('page_name');
 
         $validator
             ->boolean('status')
@@ -93,8 +101,9 @@ class FbPracticeInformationTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
-        $rules->add($rules->existsIn(['fb_page_id'], 'FbPages'));
-        $rules->add($rules->existsIn(['buzzydoc_vendor_id'], 'BuzzydocVendors'));
+        // $rules->add($rules->existsIn(['page_id'], 'Pages'));
+        $rules->add($rules->existsIn(['user_id'], 'Users'));
+        // $rules->add($rules->existsIn(['buzzydoc_vendor_id'], 'BuzzydocVendors'));
 
         return $rules;
     }

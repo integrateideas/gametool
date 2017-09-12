@@ -26,9 +26,14 @@ class UsersTableTest extends TestCase
     public $fixtures = [
         'app.users',
         'app.roles',
-        'app.user_challenge_responses',
+        'app.challenge_winners',
         'app.challenges',
-        'app.challenge_types'
+        'app.challenge_types',
+        'app.user_challenge_responses',
+        'app.fb_practice_information',
+        'app.social_profiles',
+        'app.user_social_connections',
+        'app.social_connections'
     ];
 
     /**
@@ -81,6 +86,16 @@ class UsersTableTest extends TestCase
      * @return void
      */
     public function testBuildRules()
+    {
+        $this->markTestIncomplete('Not implemented yet.');
+    }
+
+    /**
+     * Test beforeMarshal method
+     *
+     * @return void
+     */
+    public function testBeforeMarshal()
     {
         $this->markTestIncomplete('Not implemented yet.');
     }

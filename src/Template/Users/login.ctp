@@ -45,15 +45,15 @@ $this->Form->setTemplates($loginFormTemplate);
 <?php } ?> -->
 
 
-<div class="middle-box text-center loginscreen animated fadeInDown">
-    <div>
-        <h3>Welcome to Trivia Game</h3>
-        <div class="users form">
-            <?= $this->Form->postLink(
-                'Login With Facebook',$this->Url->build(['controller' => 'Users', 'action' => 'login','?' => ['provider' => 'Facebook']],true)
-            ,['class' => "btn btn-success"]); ?>
+<div class="lock-container" style="padding-top: 10%;">
+    <div class="hpanel">
+        <div class="panel-body text-center">
+            <?= $this->Html->image('/img/logo_1024.png', array('height' => 100, 'width' => 100,'id'=>'upload-img','style'=>'margin:auto;display:block')); ?>
+            <br/>
+            <h4><span class="text-primary">PROMOTE EFFORTLESSLY</span> </h4>
+            <p class="small">Take Control of your content strategy and consolidate your tools into one content marketing editorial place with Trivia Game.</p>
+            <a href = "<?=  $fbLoginUrl?>" class='btn btn-primary block full-width'>Login with Facebook</a>
         </div>
-        <p class="m-t"> <small>Twinspark Technologies &copy; <?php echo  date("Y");?></small> </p>
     </div>
 </div>
 <style type="text/css">
