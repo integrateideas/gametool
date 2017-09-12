@@ -9,8 +9,7 @@ use Cake\Validation\Validator;
 /**
  * ChallengeWinners Model
  *
- * @property \App\Model\Table\UsersTable|\Cake\ORM\Association\BelongsTo $Users
- * @property \App\Model\Table\FbPagesTable|\Cake\ORM\Association\BelongsTo $FbPages
+ * @property |\Cake\ORM\Association\BelongsTo $FbPracticeInformations
  * @property \App\Model\Table\ChallengesTable|\Cake\ORM\Association\BelongsTo $Challenges
  *
  * @method \App\Model\Entity\ChallengeWinner get($primaryKey, $options = [])
@@ -42,14 +41,10 @@ class ChallengeWinnersTable extends Table
 
         $this->addBehavior('Timestamp');
 
-        $this->belongsTo('Users', [
-            'foreignKey' => 'user_id',
+        $this->belongsTo('FbPracticeInformation ', [
+            'foreignKey' => 'fb_practice_information_id',
             'joinType' => 'INNER'
         ]);
-        // $this->belongsTo('FbPages', [
-        //     'foreignKey' => 'fb_page_id',
-        //     'joinType' => 'INNER'
-        // ]);
         $this->belongsTo('Challenges', [
             'foreignKey' => 'challenge_id',
             'joinType' => 'INNER'
@@ -68,6 +63,16 @@ class ChallengeWinnersTable extends Table
             ->integer('id')
             ->allowEmpty('id', 'create');
 
+        $validator
+            ->scalar('identifier_type')
+            ->requirePresence('identifier_type', 'create')
+            ->notEmpty('identifier_type');
+
+        $validator
+            ->scalar('identifier_value')
+            ->requirePresence('identifier_value', 'create')
+            ->notEmpty('identifier_value');
+
         return $validator;
     }
 
@@ -80,7 +85,7 @@ class ChallengeWinnersTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
-        $rules->add($rules->existsIn(['user_id'], 'Users'));
+        $rules->add($rules->existsIn(['fb_practice_information_id'], 'FbPracticeInformation'));
         $rules->add($rules->existsIn(['challenge_id'], 'Challenges'));
 
         return $rules;

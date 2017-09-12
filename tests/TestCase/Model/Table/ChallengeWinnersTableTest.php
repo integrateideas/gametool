@@ -27,10 +27,11 @@ class ChallengeWinnersTableTest extends TestCase
         'app.challenge_winners',
         'app.users',
         'app.roles',
+        'app.social_profiles',
         'app.user_challenge_responses',
         'app.challenges',
         'app.challenge_types',
-        'app.fb_pages'
+        'app.fb_practice_information'
     ];
 
     /**
