@@ -11,8 +11,8 @@ use Cake\Utility\Text;
  * Users Model
  *
  * @property \App\Model\Table\RolesTable|\Cake\ORM\Association\BelongsTo $Roles
- * @property |\Cake\ORM\Association\HasMany $SocialProfiles
- * @property \App\Model\Table\UserChallengeResponsesTable|\Cake\ORM\Association\HasMany $UserChallengeResponses
+ * @property \App\Model\Table\ChallengeWinnersTable|\Cake\ORM\Association\HasMany $ChallengeWinners
+ * @property \App\Model\Table\UserSocialConnectionsTable|\Cake\ORM\Association\HasMany $UserSocialConnections
  *
  * @method \App\Model\Entity\User get($primaryKey, $options = [])
  * @method \App\Model\Entity\User newEntity($data = null, array $options = [])
@@ -47,15 +47,12 @@ class UsersTable extends Table
             'foreignKey' => 'role_id',
             'joinType' => 'INNER'
         ]);
-        $this->hasMany('SocialProfiles', [
+        $this->hasMany('ChallengeWinners', [
             'foreignKey' => 'user_id'
         ]);
-        $this->hasMany('UserChallengeResponses', [
+        $this->hasMany('UserSocialConnections', [
             'foreignKey' => 'user_id'
         ]);
-        $this->hasMany('ADmad/HybridAuth.SocialProfiles');
-
-        \Cake\Event\EventManager::instance()->on('HybridAuth.newUser', [$this, 'createUser']);
     }
 
     /**
@@ -71,12 +68,9 @@ class UsersTable extends Table
             ->allowEmpty('id', 'create');
 
         $validator
-            ->requirePresence('first_name', 'create')
-            ->notEmpty('first_name');
-
-        $validator
-            ->requirePresence('last_name', 'create')
-            ->notEmpty('last_name');
+            ->scalar('name')
+            ->requirePresence('name', 'create')
+            ->notEmpty('name');
 
         $validator
             ->email('email')
@@ -89,7 +83,9 @@ class UsersTable extends Table
             ->notEmpty('username');
 
         $validator
-            ->allowEmpty('uuid');
+            ->uuid('uuid')
+            ->requirePresence('uuid', 'create')
+            ->notEmpty('uuid');
 
         $validator
             ->scalar('password')
@@ -115,14 +111,10 @@ class UsersTable extends Table
         return $rules;
     }
 
-    public function beforeMarshal( \Cake\Event\Event $event, \ArrayObject $data, \ArrayObject $options){
+      public function beforeMarshal( \Cake\Event\Event $event, \ArrayObject $data, \ArrayObject $options){
        if (!isset($data['uuid'])) {
            $data['uuid'] = Text::uuid();
        }
 
-    }
-
-    public function createUser(\Cake\Event\Event $event) {
-       throw new \RuntimeException('Unauthorized Access');
     }
 }

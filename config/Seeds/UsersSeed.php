@@ -23,8 +23,7 @@ class UsersSeed extends AbstractSeed
         $hasher = new DefaultPasswordHasher();
         $data = [
                     [
-                      'first_name'    => 'james',
-                      'last_name'    => 'james',
+                      'name'    => 'james',
                       'email'   =>'james.kukreja@twinspark.co',
                       'username' => 'james',
                       'uuid' => '1234567890',
@@ -34,8 +33,7 @@ class UsersSeed extends AbstractSeed
                       'modified'=> '2016-06-15 10:01:27',
                     ],
                     [
-                      'first_name'    => 'Integrateideas',
-                      'last_name'    => 'Integrateideas',
+                      'name'    => 'Integrateideas',
                       'email'   =>'engage@integrateideas.com',
                       'username' => 'Integrateideas',
                       'uuid' => '1234567890',

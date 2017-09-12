@@ -4,22 +4,21 @@ namespace App\Model\Entity;
 use Cake\ORM\Entity;
 
 /**
- * FbPracticeInformation Entity
+ * UserSocialConnection Entity
  *
  * @property int $id
- * @property string $practice_name
- * @property string $page_id
- * @property string $page_name
  * @property int $user_id
- * @property int $buzzydoc_vendor_id
+ * @property int $social_connection_id
+ * @property string $social_connection_identifier
  * @property bool $status
  * @property \Cake\I18n\FrozenTime $created
  * @property \Cake\I18n\FrozenTime $modified
+ * @property \Cake\I18n\FrozenTime $is_deleted
  *
- * @property \App\Model\Entity\ChallengeWinner[] $challenge_winners
- * @property \App\Model\Entity\UserChallengeResponse[] $user_challenge_responses
+ * @property \App\Model\Entity\User $user
+ * @property \App\Model\Entity\SocialConnection $social_connection
  */
-class FbPracticeInformation extends Entity
+class UserSocialConnection extends Entity
 {
 
     /**

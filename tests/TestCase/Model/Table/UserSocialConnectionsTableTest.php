@@ -1,22 +1,22 @@
 <?php
 namespace App\Test\TestCase\Model\Table;
 
-use App\Model\Table\FbPracticeInformationTable;
+use App\Model\Table\UserSocialConnectionsTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
- * App\Model\Table\FbPracticeInformationTable Test Case
+ * App\Model\Table\UserSocialConnectionsTable Test Case
  */
-class FbPracticeInformationTableTest extends TestCase
+class UserSocialConnectionsTableTest extends TestCase
 {
 
     /**
      * Test subject
      *
-     * @var \App\Model\Table\FbPracticeInformationTable
+     * @var \App\Model\Table\UserSocialConnectionsTable
      */
-    public $FbPracticeInformation;
+    public $UserSocialConnections;
 
     /**
      * Fixtures
@@ -24,15 +24,16 @@ class FbPracticeInformationTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'app.fb_practice_information',
-        'app.challenge_winners',
+        'app.user_social_connections',
         'app.users',
         'app.roles',
-        'app.user_social_connections',
-        'app.social_connections',
+        'app.social_profiles',
+        'app.user_challenge_responses',
         'app.challenges',
         'app.challenge_types',
-        'app.user_challenge_responses'
+        'app.fb_practice_information',
+        'app.challenge_winners',
+        'app.social_connections'
     ];
 
     /**
@@ -43,8 +44,8 @@ class FbPracticeInformationTableTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $config = TableRegistry::exists('FbPracticeInformation') ? [] : ['className' => FbPracticeInformationTable::class];
-        $this->FbPracticeInformation = TableRegistry::get('FbPracticeInformation', $config);
+        $config = TableRegistry::exists('UserSocialConnections') ? [] : ['className' => UserSocialConnectionsTable::class];
+        $this->UserSocialConnections = TableRegistry::get('UserSocialConnections', $config);
     }
 
     /**
@@ -54,7 +55,7 @@ class FbPracticeInformationTableTest extends TestCase
      */
     public function tearDown()
     {
-        unset($this->FbPracticeInformation);
+        unset($this->UserSocialConnections);
 
         parent::tearDown();
     }

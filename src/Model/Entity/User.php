@@ -18,7 +18,9 @@ use Cake\Auth\DefaultPasswordHasher;
  * @property \Cake\I18n\FrozenTime $modified
  *
  * @property \App\Model\Entity\Role $role
- * @property \App\Model\Entity\UserChallengeResponse[] $user_challenge_responses
+ * @property \App\Model\Entity\ChallengeWinner[] $challenge_winners
+ * @property \App\Model\Entity\SocialProfile[] $social_profiles
+ * @property \App\Model\Entity\UserSocialConnection[] $user_social_connections
  */
 class User extends Entity
 {
@@ -45,8 +47,7 @@ class User extends Entity
     protected $_hidden = [
         'password'
     ];
-
-    protected function _setPassword($password)
+       protected function _setPassword($password)
     {
         if (strlen($password) > 0) {
             return (new DefaultPasswordHasher)->hash($password);

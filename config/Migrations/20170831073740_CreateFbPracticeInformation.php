@@ -16,17 +16,32 @@ class CreateFbPracticeInformation extends AbstractMigration
         $table->addColumn('practice_name', 'string', [
             'default' => null,
             'limit' => 255,
-            'null' => false,
+            'null' => true,
         ]);
-        $table->addColumn('fb_page_id', 'string', [
+        $table->addColumn('page_id', 'string', [
             'default' => null,
             'limit' => 255,
+            'null' => false,
+        ]);
+        $table->addColumn('page_name', 'string', [
+            'default' => null,
+            'limit' => 255,
+            'null' => false,
+        ]);
+        $table->addColumn('page_token', 'string', [
+            'default' => null,
+            'limit' => 255,
+            'null' => false,
+        ]);
+        $table->addColumn('user_id', 'integer', [
+            'default' => null,
+            'limit' => 11,
             'null' => false,
         ]);
         $table->addColumn('buzzydoc_vendor_id', 'integer', [
             'default' => null,
             'limit' => 11,
-            'null' => false,
+            'null' => true,
         ]);
         $table->addColumn('status', 'boolean', [
             'default' => null,

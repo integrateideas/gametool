@@ -4,8 +4,8 @@ namespace App\Controller;
 use App\Controller\AppController;
 use Cake\Core\Configure;
 use Cake\Routing\Router;
+use Cake\Cache\Cache;
 use Cake\Collection\Collection;
-
 /**
  * Challenges Controller
  *
@@ -15,6 +15,11 @@ use Cake\Collection\Collection;
  */
 class ChallengesController extends AppController
 {
+   public function initialize()
+   {
+    parent::initialize();
+    $this->Auth->allow(['userFbPosts']);
+}
 
     /**
      * Index method
@@ -23,9 +28,9 @@ class ChallengesController extends AppController
      */
     public function index()
     {
-        
+
         $this->paginate = [
-            'contain' => ['ChallengeTypes']
+        'contain' => ['ChallengeTypes']
         ];
         $challenges = $this->paginate($this->Challenges);
 
@@ -44,7 +49,7 @@ class ChallengesController extends AppController
     {
         $challenge = $this->Challenges->get($id, [
             'contain' => ['ChallengeTypes', 'UserChallengeResponses']
-        ]);
+            ]);
 
         $this->set('challenge', $challenge);
         $this->set('_serialize', ['challenge']);
@@ -88,7 +93,7 @@ class ChallengesController extends AppController
     {
         $challenge = $this->Challenges->get($id, [
             'contain' => []
-        ]);
+            ]);
         //If old image is available, unlink the path(and delete the image) and and  upload image from "upload" folder in webroot.
         $oldImageName = $challenge->image_name;
         $path = Configure::read('ImageUpload.uploadPathForChallengeImages');
@@ -147,12 +152,12 @@ class ChallengesController extends AppController
     //                     'challenge_id'=>$result->challenge_id   
     //                 ];
     //     }
-         
     //     $this->loadModel('ChallengeWinners');
     //     $triviaWinner = $this->ChallengeWinners->newEntities($data);
     //     $triviaWinner = $this->ChallengeWinners->patchEntities($triviaWinner, $data);
 
     //     if($this->ChallengeWinners->saveMany($triviaWinner)){
+
     //             pr('here');die;
     //     }   
     // }
@@ -208,8 +213,8 @@ class ChallengesController extends AppController
     public function activeChallenge(){
         $this->viewBuilder()->layout('facebookuser');
         $activeChallenge = $this->Challenges->find()
-                                            ->where(['is_active IS NOT' => 0])
-                                            ->first();
+        ->where(['is_active IS NOT' => 0])
+        ->first();
         $image_url = Router::url('/', true);
         $image_url = $image_url.$activeChallenge->image_path.'/'.$activeChallenge->image_name;
         $url = Router::url(['controller'=>'Challenges','action'=>'activeChallenge'],true);
@@ -217,5 +222,40 @@ class ChallengesController extends AppController
         $activeChallenge->image_url = $image_url;                                
         $this->set(compact('activeChallenge'));
         $this->set('_serialize', ['activeChallenge']);
+    }
+
+    public function userFbPosts(){
+       
+        $this->loadComponent('FbGraphApi'); 
+        $getFbPages = $this->FbGraphApi->getPages(true);
+        // pr($getFbPages['response']);die;
+        $data = [];
+
+        foreach ($getFbPages['response'] as $key => $value) {
+            $data[] = [ 
+                        'page_token'=> $value->access_token,
+                        'page_id' => $value->id,
+                        'page_name' => $value->name,
+                        'user_id' =>$this->Auth->User('id'),
+                        'status' => $getFbPages['status']
+                       ];
+        }
+        
+        $this->loadModel('FbPracticeInformation');
+        $fbPageInfo = $this->FbPracticeInformation->newEntities($data);
+        $fbPageInfo = $this->FbPracticeInformation->patchEntities($fbPageInfo, $data);
+        if ($this->FbPracticeInformation->saveMany($fbPageInfo)) {
+                pr($this->FbPracticeInformation->saveMany($fbPageInfo));die;
+            }else{
+                pr('There is an error while saving data.');
+            }
+        
+        $response = $this->FbGraphApi->postOnFb($data['fb_page_identifier'],$data['message'],$pageToken[$data['fb_page_identifier']]);
+
+    }
+    public function isAuthorized($user)
+    {
+
+        return parent::isAuthorized($user);
     }
 }

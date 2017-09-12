@@ -65,3 +65,19 @@
 </div><!-- .ibox  end -->
 </div><!-- .col-lg-12 end -->
 </div><!-- .row end -->
+<script type="text/javascript">
+var host = $('#baseUrl').val();
+console.log(host);
+    $(document).ready(function(){
+        $.ajax({
+                    method: "GET",
+                    url : host + "api/users/syncFbPages",
+                    headers:{"accept":"application/json"},
+                    dataType: 'json',
+
+        })
+        .success(function(response){
+                console.log(response);
+        });
+    });
+</script>

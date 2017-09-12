@@ -28,6 +28,10 @@ use Cake\Core\Configure;
  */
 class AppController extends Controller
 {
+  public function isAuthorized($user)
+  {
+    return false;
+  }
 
     /**
      * Initialization hook method.
@@ -40,31 +44,17 @@ class AppController extends Controller
      */
     public function initialize()
     {
-        parent::initialize();
+      parent::initialize();
 
-        $this->loadComponent('RequestHandler');
-        $this->loadComponent('Flash');
-        $this->loadComponent('Auth', [
-        'authenticate' => [
-        'Form'=> [
-        'fields' => [
-        'username' => 'email',
-        'password' => 'password'
-        ]
+      $this->loadComponent('RequestHandler');
+      $this->loadComponent('Flash');
+      $this->loadComponent('Auth', [
+        'authorize' => 'Controller',
+        'unauthorizedRedirect' => [
+        'controller' => 'Users',
+        'action' => 'login'
         ],
-        'ADmad/HybridAuth.HybridAuth' => [
-        // All keys shown below are defaults
-        'fields' => [
-        'provider' => 'provider',
-        'openid_identifier' => 'openid_identifier',
-        'email' => 'email'
-        ],
-        'profileModel' => 'ADmad/HybridAuth.SocialProfiles',
-        'profileModelFkField' => 'user_id',
-        'userModel' => 'Users',
-        'hauth_return_to' => null
-        ],
-        ]
+        'authError' => 'You should not be peeking around here'
         ]);
         
         $this->Auth->allow(['add', 'index', 'edit', 'delete', 'view', 'activeChallenge','triviaWinner']);
@@ -74,16 +64,16 @@ class AppController extends Controller
          */
         //$this->loadComponent('Security');
         //$this->loadComponent('Csrf');
-    }
-
-    public function beforeFilter(Event $event)
-    {
-      $user = $this->Auth->user();
-      if(!empty($user) && isset($user['role'])){  
-      $sideNavData = ['id'=>$user['id'],'first_name' => $user['first_name'],'last_name' => $user['last_name'],'role_name' => $user['role']['name'],];
-      $this->set('sideNavData', $sideNavData);
       }
-    }
+
+      public function beforeFilter(Event $event)
+      {
+        $user = $this->Auth->user();
+        if(!empty($user) && isset($user['role'])){  
+          $sideNavData = ['id'=>$user['id'],'first_name' => $user['name'],'last_name' => '','role_name' => $user['role']['name'],];
+          $this->set('sideNavData', $sideNavData);
+        }
+      }
 
     /**
      * Before render callback.
@@ -107,8 +97,8 @@ class AppController extends Controller
           $menu = Configure::read('Menu.StaffAdmin');
         }
         if($menu){
-            $nav = $this->checkLink($menu, $user['role']['name']);      
-            $this->set('sideNav',$nav['children']);
+          $nav = $this->checkLink($menu, $user['role']['name']);      
+          $this->set('sideNav',$nav['children']);
         }
         $this->set(compact('title'));
       }
@@ -120,7 +110,7 @@ class AppController extends Controller
     }
   }
 
-    public function checkLink($nav = [], $role = false){
+  public function checkLink($nav = [], $role = false){
     $currentLink = [
     'controller' => $this->request->params['controller'],
     'action' => $this->request->params['action']

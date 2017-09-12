@@ -1,7 +1,7 @@
 <?php
 use Migrations\AbstractMigration;
 
-class CreateUsers extends AbstractMigration
+class CreateSocialConnections extends AbstractMigration
 {
     /**
      * Change Method.
@@ -12,35 +12,21 @@ class CreateUsers extends AbstractMigration
      */
     public function change()
     {
-        $table = $this->table('users');
-       $table->addColumn('name', 'string', [
+        $table = $this->table('social_connections');
+        $table->addColumn('name', 'string', [
             'default' => null,
             'limit' => 255,
             'null' => false,
         ]);
-        $table->addColumn('email', 'string', [
+        $table->addColumn('label', 'string', [
             'default' => null,
             'limit' => 255,
             'null' => false,
         ]);
-        $table->addColumn('username', 'string', [
-            'default' => null,
+        $table->addColumn('status', 'boolean', [
+            'default' => 1,
             'limit' => 255,
-            'null' => false,
-        ]);
-        $table->addColumn('uuid', 'uuid', [
-            'default' => null,
-            'null' => false,
-        ]);
-        $table->addColumn('role_id', 'integer', [
-            'default' => null,
-            'limit' => 11,
-            'null' => false,
-        ]);
-        $table->addColumn('password', 'string', [
-            'default' => null,
-            'limit' => 255,
-            'null' => false,
+            'null' => true,
         ]);
         $table->addColumn('created', 'datetime', [
             'default' => null,
@@ -49,6 +35,10 @@ class CreateUsers extends AbstractMigration
         $table->addColumn('modified', 'datetime', [
             'default' => null,
             'null' => false,
+        ]);
+        $table->addColumn('is_deleted', 'datetime', [
+            'default' => null,
+            'null' => true,
         ]);
         $table->create();
     }

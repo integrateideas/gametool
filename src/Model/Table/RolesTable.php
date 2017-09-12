@@ -69,4 +69,13 @@ class RolesTable extends Table
 
         return $validator;
     }
+    public function findRolesByName(Query $query, array $options)
+  {
+    $role = $options['role'];
+    return $query->where(['name' => $role['name']]);
+  }
+  public function findRolesById(Query $query, array $options)
+  {
+    return $query->where(['id' => $options['role']]);
+  }
 }
