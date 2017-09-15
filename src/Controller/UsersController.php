@@ -139,10 +139,9 @@ const USER_LABEL='user';
 
         return $this->redirect(['action' => 'index']);
     }
-
+    
     public function login()
     {
-        
         $this->viewBuilder()->layout('login-admin');
         if (!isset($_GET['state'])) {
             $resp = $this->FbGraphApi->getFbLoginUrl();

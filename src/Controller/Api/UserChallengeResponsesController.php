@@ -21,10 +21,8 @@ class UserChallengeResponsesController extends ApiController
      */
     public function add()
     {
-        // pr('m here'); die;
         //find challenge by id from challenge table and check that challenge is active or inactive if its active then compare user response with the correct responses, and  save user challenge data in user challenge response table if they give correct response. 
         $this->request->data = $this->request->data['data'];
-        // pr($this->request->data); die;
         $challengeId = $this->request->data['challenge_id'];
         $userChallengeResponse = $this->UserChallengeResponses->newEntity(); 
         $challenge =  $this->UserChallengeResponses->Challenges->findById($challengeId)
@@ -34,10 +32,11 @@ class UserChallengeResponsesController extends ApiController
         $existingUser = $this->UserChallengeResponses->find()
                                                      ->where(['identifier_type' => $this->request->data['identifier_type'], 'identifier_value' => $this->request->data['identifier_value'], 'challenge_id' => $this->request->data['challenge_id']])
                                                      ->first();
-        // pr($existingUser); die();
+
         $this->loadModel('FbPracticeInformation');
-        $fbPracticeInfoId = $this->FbPracticeInformation->findByFbPageId($this->request->data['fb_page_id'])->first();
+        $fbPracticeInfoId = $this->FbPracticeInformation->findByPageId($this->request->data['page_id'])->first();
         $this->request->data['fb_practice_information_id'] = $fbPracticeInfoId->id;
+        
         if ($this->request->is('post')) {
             if($challenge){
                 if(!$existingUser){
@@ -52,7 +51,6 @@ class UserChallengeResponsesController extends ApiController
                         $this->request->data['status'] = true;
                   }
                   $userChallengeResponse = $this->UserChallengeResponses->patchEntity($userChallengeResponse, $this->request->getData());
-                  // pr($userChallengeResponse); die;
                     if ($this->UserChallengeResponses->save($userChallengeResponse)){
                         $this->set('userChallengeResponse', $userChallengeResponse);
                         $this->set('response', ['message' => 'Thanks for your response']);

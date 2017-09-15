@@ -7,7 +7,6 @@ use Cake\Network\Exception\MethodNotAllowedException;
 use Cake\Network\Exception\BadRequestException;
 use Cake\Network\Exception\NotFoundException;
 use Cake\Network\Exception\InternalErrorException;
-use Cake\Collection\Collection;
 use Cake\Log\Log;
 
 /**

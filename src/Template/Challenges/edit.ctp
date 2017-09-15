@@ -20,6 +20,12 @@
                             echo $this->Form->control('instruction');
                             echo $this->Form->control('challenge_type_id', ['options' => $challengeTypes, 'empty' => '---Please Select---']);
                             ?>
+
+                            <div id = "share-wisdom" style = "display: none;">
+                                <?php
+                                    echo $this->Form->control('details.topic');
+                                ?>
+                            </div>
                         <div class="form-group">
                                 <?= $this->Form->label('image_path', __('Image Upload'), ['class' => 'col-sm-2 control-label']); ?>
                                 <div class="col-sm-4">
@@ -100,14 +106,22 @@ function toggleElements(chVal){
     if(chVal == 1){
         document.getElementById('read-article').style.display = 'block';
         document.getElementById('fill-in-blanks').style.display = 'block';
+        document.getElementById('share-wisdom').style.display = 'none';
     }
-    if(chVal == 2 || chVal == 3){
+    if(chVal == 2 ){
+        document.getElementById('share-wisdom').style.display = 'block';
         document.getElementById('read-article').style.display = 'none';
         document.getElementById('fill-in-blanks').style.display = 'none';
+    }
+    if( chVal == 3){
+        document.getElementById('read-article').style.display = 'none';
+        document.getElementById('fill-in-blanks').style.display = 'none';
+        document.getElementById('share-wisdom').style.display = 'none';
     }
     if(chVal == 4 || chVal == 5){
         document.getElementById('read-article').style.display = 'block';
         document.getElementById('fill-in-blanks').style.display = 'none';
+        document.getElementById('share-wisdom').style.display = 'none';
     }
     document.getElementById('multiple').style.display = 'none';
     document.getElementById('optionData').style.display = 'none';
