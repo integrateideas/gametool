@@ -94,7 +94,7 @@
                 'response' : value,
                 'identifier_type' : identifierType,
                 'identifier_value' : identifierValue,
-                'fb_page_id' : 3
+                'page_id' : '2523215881152447'
 
             });
             $.ajax({

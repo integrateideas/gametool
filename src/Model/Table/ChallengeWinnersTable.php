@@ -85,7 +85,7 @@ class ChallengeWinnersTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
-        $rules->add($rules->existsIn(['fb_practice_information_id'], 'FbPracticeInformation'));
+        // $rules->add($rules->existsIn(['fb_practice_information_id'], 'FbPracticeInformation'));
         $rules->add($rules->existsIn(['challenge_id'], 'Challenges'));
 
         return $rules;

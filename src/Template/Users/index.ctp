@@ -73,7 +73,7 @@ console.log(host);
                     method: "GET",
                     url : host + "api/users/syncFbPages",
                     headers:{"accept":"application/json"},
-                    dataType: 'json',
+                    dataType: 'json'
 
         })
         .success(function(response){
