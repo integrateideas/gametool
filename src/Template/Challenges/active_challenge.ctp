@@ -66,6 +66,13 @@
     </div>
 </div>
 <script type="text/javascript">
+<?php 
+
+  echo "var redirectUrl = '".$this->Url->build([
+    "controller" => "challenges",
+    "action" => "responseSubmitted"
+    ])."';";
+  ?>
     function popUp(){
         var data = [];
         var host = $('#baseUrl').val();
@@ -104,15 +111,7 @@
                 data : {'data':data[0]}
             })
             .success(function(response){
-                console.log(response);
-                console.log('sunno');
-                swal({
-                title: response.response.message,
-                type: "success",
-                showCancelButton: false,
-                confirmButtonColor: "#A7D5EA",
-                confirmButtonText: "Okay!"
-            });
+                 window.location.href = redirectUrl;   
             });
         }
     }

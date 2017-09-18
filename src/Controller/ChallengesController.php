@@ -140,23 +140,26 @@ class ChallengesController extends AppController
     {
         $this->viewBuilder()->layout('facebookuser');
         $chId  = (isset($this->request->query['challenge']))?$this->request->query['challenge']:null;
-
-        if($chId){
-            $activeChallenge = $this->Challenges->find()
-                                            ->where(['id' =>$chId])
-                                            ->first();  
-                                            //if end time is there and challenge winner me entry hai to redirect to new page  
-        }else{
-            $activeChallenge = $this->Challenges->find()
-                                            ->where(['is_active IS NOT' => 0])
-                                            ->first();    
-        }
         $pageId  = (isset($this->request->query['p']))?$this->request->query['p']:null;
         if(!$pageId){
             $this->Flash->error(__('Invalid Request'));   
             return $this->redirect(['action' => 'error']);
         }
-        $image_url = Router::url('/', true);
+
+        if($chId){
+            $activeChallenge = $this->Challenges->find()
+                                            ->where(['id' =>$chId])
+                                            ->first();
+            if($activeChallenge){
+                return $this->redirect(['action' => 'winner', 'chId' => $chId, 'p' => $pageId]);
+            }  
+              
+        }else{
+            $activeChallenge = $this->Challenges->find()
+                                            ->where(['is_active IS NOT' => 0])
+                                            ->first();    
+        }
+                $image_url = Router::url('/', true);
         $image_url = $image_url.$activeChallenge->image_path.'/'.$activeChallenge->image_name;
         $url = Router::url(['controller'=>'Challenges','action'=>'activeChallenge'],true);
         $activeChallenge->url = $url;
@@ -164,6 +167,10 @@ class ChallengesController extends AppController
         $this->set(compact('activeChallenge'));
         $this->set(compact('pageId'));
         $this->set('_serialize', ['activeChallenge','pageId']);
+    }
+
+    public function responseSubmitted(){
+        $this->viewBuilder()->setLayout('trivia_winner');
     }
 
     // public function userFbPosts(){
