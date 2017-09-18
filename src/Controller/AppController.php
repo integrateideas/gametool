@@ -97,7 +97,8 @@ class AppController extends Controller
           $menu = Configure::read('Menu.StaffAdmin');
         }
         if($menu){
-          $nav = $this->checkLink($menu, $user['role']['name']);      
+          $nav = $this->checkLink($menu, $user['role']['name']); 
+          // pr($nav); die;     
           $this->set('sideNav',$nav['children']);
         }
         $this->set(compact('title'));
