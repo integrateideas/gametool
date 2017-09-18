@@ -6,6 +6,7 @@ use Cake\Core\Configure;
 use Cake\Routing\Router;
 use Cake\Cache\Cache;
 use Cake\Collection\Collection;
+use Cake\I18n\Time;
 /**
  * Challenges Controller
  *
@@ -64,11 +65,14 @@ class ChallengesController extends AppController
     {
         $challenge = $this->Challenges->newEntity();
         if ($this->request->is('post')) {
-            // pr($this->request->data); die;
             if($this->request->data['challenge_type_id'] == 3 || $this->request->data['challenge_type_id'] == 4){
                 $this->request->data['details'] = null;
                 $this->request->data['response'] = null;
             }
+            $time = $this->request->data['end_time'];
+            $timestamp = strtotime($time);
+            $new_date = date('Y-m-d H:i:s',$timestamp );
+            $this->request->data['end_time'] = $new_date;
             $challenge = $this->Challenges->patchEntity($challenge, $this->request->getData());
             if ($this->Challenges->save($challenge)) {
                 $this->Flash->success(__('The challenge has been saved.'));
@@ -135,17 +139,31 @@ class ChallengesController extends AppController
     public function activeChallenge()
     {
         $this->viewBuilder()->layout('facebookuser');
-        $activeChallenge = $this->Challenges->find()
-                                            ->where(['is_active IS NOT' => 0])
-                                            ->first();
+        $chId  = (isset($this->request->query['challenge']))?$this->request->query['challenge']:null;
 
+        if($chId){
+            $activeChallenge = $this->Challenges->find()
+                                            ->where(['id' =>$chId])
+                                            ->first();  
+                                            //if end time is there and challenge winner me entry hai to redirect to new page  
+        }else{
+            $activeChallenge = $this->Challenges->find()
+                                            ->where(['is_active IS NOT' => 0])
+                                            ->first();    
+        }
+        $pageId  = (isset($this->request->query['p']))?$this->request->query['p']:null;
+        if(!$pageId){
+            $this->Flash->error(__('Invalid Request'));   
+            return $this->redirect(['action' => 'error']);
+        }
         $image_url = Router::url('/', true);
         $image_url = $image_url.$activeChallenge->image_path.'/'.$activeChallenge->image_name;
         $url = Router::url(['controller'=>'Challenges','action'=>'activeChallenge'],true);
         $activeChallenge->url = $url;
         $activeChallenge->image_url = $image_url;                                
         $this->set(compact('activeChallenge'));
-        $this->set('_serialize', ['activeChallenge']);
+        $this->set(compact('pageId'));
+        $this->set('_serialize', ['activeChallenge','pageId']);
     }
 
     // public function userFbPosts(){

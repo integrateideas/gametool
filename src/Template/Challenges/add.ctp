@@ -3,6 +3,11 @@
   * @var \App\View\AppView $this
   */
 ?>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/js/bootstrap-datetimepicker.min.js"></script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/css/bootstrap-datetimepicker.min.css">
+
 <div class="row">
     <div class="col-lg-12">
         <div class="ibox float-e-margins">
@@ -32,6 +37,23 @@
                                     <?= $this->Form->input('image_name', ['accept'=>"image/*",'label' => false,'required' => true,['class' => 'form-control'],'type' => "file",'id'=>'imgChange']); ?>
                                 </div>
                             </div>
+                            <div class="hr-line-dashed"></div>
+                            <div class="form-group" id="data_1">
+                                <label class="col-sm-2 control-label">
+                                        End Time
+                                    </label>
+                                <div class="col-sm-7">
+                                    <div class="form-group">
+                                        <div class='input-group date' id='datetimepicker'>
+                                            <input type='text' class="form-control" / name="end_time">
+                                            <span class="input-group-addon">
+                                                <span class="glyphicon glyphicon-calendar" ></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="hr-line-dashed"></div>
                         <div id = "read-article" style = "display: none;">
                             <?php
                                 $question_type = [
@@ -88,7 +110,22 @@
     </div>
 </div>
 
+   <script src="<?php echo $this->request->webroot;?>js/datapicker/bootstrap-datepicker.js"></script>
+
+
+
 <script type="text/javascript">
+
+/*calender*/
+
+$('#data_1 .input-group.date').datepicker({
+    todayBtn: "linked",
+    keyboardNavigation: false,
+    forceParse: false,
+    calendarWeeks: true,
+    autoclose: true
+});
+
 
 $(document).on('change', 'select', function() {
     console.log($(this).val()); // the selected options’s value
@@ -176,3 +213,11 @@ max-width: 100%;
 object-fit: cover;
 }
 </style>
+<script type="text/javascript">
+    $(function () {
+        $('#datetimepicker').datetimepicker({
+            minDate:moment()
+        });
+
+    });
+</script>

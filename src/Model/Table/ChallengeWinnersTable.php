@@ -41,7 +41,7 @@ class ChallengeWinnersTable extends Table
 
         $this->addBehavior('Timestamp');
 
-        $this->belongsTo('FbPracticeInformation ', [
+        $this->belongsTo('FbPracticeInformation', [
             'foreignKey' => 'fb_practice_information_id',
             'joinType' => 'INNER'
         ]);

@@ -64,7 +64,7 @@ class UserChallengeResponsesController extends AppController
                                                            ->first();
 
         $this->loadModel('FbPracticeInformation');
-        $fbPracticeInfoId = $this->FbPracticeInformation->findByFbPageId($this->request->data['fb_page_id'])->first();
+        $fbPracticeInfoId = $this->FbPracticeInformation->findByFbPageId($this->request->data['page_id'])->first();
         $this->request->data['fb_practice_information_id'] = $fbPracticeInfoId->id;
 
         // $this->request->data['user_id'] = $this->Auth->user('id');

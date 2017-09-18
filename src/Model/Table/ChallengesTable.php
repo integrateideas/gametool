@@ -56,6 +56,9 @@ class ChallengesTable extends Table
         $this->hasMany('UserChallengeResponses', [
             'foreignKey' => 'challenge_id'
         ]);
+         $this->hasMany('ChallengeWinners', [
+            'foreignKey' => 'challenge_id'
+        ]);
          $this->addBehavior('Josegonzalez/Upload.Upload', [
           'image_name' => [
 
