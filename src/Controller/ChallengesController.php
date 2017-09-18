@@ -136,8 +136,95 @@ class ChallengesController extends AppController
         return $this->redirect(['action' => 'index']);
     }
 
-    public function activeChallenge()
-    {
+    // public function triviaWinner(){
+        
+    //     $this->loadModel('UserChallengeResponses');
+    //     $selectedWinneres = $this->UserChallengeResponses->find()
+    //                                                      ->contain('FbPracticeInformation')
+    //                                                      ->all()
+    //                                                      ->groupBy('fb_practice_information_id')
+    //                                                      ->toArray();
+
+    //     $data = [];
+    //     foreach ($selectedWinneres as $key => $value) {
+
+    //         $getRandomWinner = array_rand($value);
+    //         $result = $value[$getRandomWinner];
+    //         $data[] = [
+    //                     'user_id' => $result->user_id,
+    //                     'fb_practice_information_id'=> $result->fb_practice_information_id,
+    //                     'challenge_id'=>$result->challenge_id   
+    //                 ];
+    //     }
+         
+    //     $this->loadModel('ChallengeWinners');
+    //     $triviaWinner = $this->ChallengeWinners->newEntities($data);
+    //     $triviaWinner = $this->ChallengeWinners->patchEntities($triviaWinner, $data);
+
+    //     if($this->ChallengeWinners->saveMany($triviaWinner)){
+    //             pr('here');die;
+    //     }   
+    // }
+
+     public function triviaWinner(){
+        $this->loadModel('UserChallengeResponses');
+        // active challenge id
+
+        // find active challenge from challenge table and then find users from user challenge response table corresponding to active challenge id
+        $challengeId = $this->Challenges->find()
+                                            ->where(['is_active'=> 1])
+                                            ->first()
+                                            ->get('id');
+        $userResponses = $this->UserChallengeResponses->findByChallengeId($challengeId)
+                                             ->where(['status' => 1])
+                                             ->groupBy('fb_practice_information_id')
+                                             ->toArray();
+        // pr($userResponses);
+        $this->loadModel('ChallengeWinners'); 
+        $challengeWinners = $this->ChallengeWinners->find()
+                                                   ->select(['fb_practice_information_id','identifier_value','identifier_type','created'])
+                                                   ->groupBy('fb_practice_information_id')
+                                                   ->toArray();
+
+            // pr($challengeWinners);die;
+        // $triviaWinner = [];                                            
+        foreach ($userResponses as $key => $response) {
+            $winnerArray = isset($challengeWinners[$key]) ? $challengeWinners[$key] : null;
+            // pr($winnerArray); die;
+            if(!$winnerArray){
+                //$triviaWinner[$key]= select random winner
+            }else{
+                foreach ($response as $value) {
+                    pr($value);
+                    foreach ($winnerArray as $winner) {
+                        // pr($winner);
+                        if($value->identifier_type === $winner->identifier_type &&  $value->identifier_value === $winner->identifier_value){
+                            pr('here when match');
+                            pr($value->identifier_type); 
+                            pr($value->identifier_value);
+                            $triviaWinner[] = $winner;
+                        // }else{
+                        //     pr('here when not');
+                        //     pr($value->identifier_type); 
+                        //     pr($value->identifier_value);
+                        //     //isme vo winner declare kiya jayega jiski entry abhi tk challenge winner mein nahi ho rakhi kisi practice k corresponding.
+                        } 
+                    }
+                }
+            }
+        }
+        die;
+        // pr($triviaWinner); die;
+        // //pr(asort($triviaWinner)); die;
+        // $win = $triviaWinner;
+        // asort($win);
+        // foreach($win as $x => $value) {
+        //     echo "Key=" . $value->identifier_value . ", Value=" . $value->created;
+        //     echo "<br>";
+        // }
+    }
+
+    public function activeChallenge(){
         $this->viewBuilder()->layout('facebookuser');
         $chId  = (isset($this->request->query['challenge']))?$this->request->query['challenge']:null;
 
@@ -200,5 +287,32 @@ class ChallengesController extends AppController
     {
 
         return parent::isAuthorized($user);
+    }
+
+    public function winner(){
+        $this->viewBuilder()->layout('facebookuser');
+        $challengeId = (isset($this->request->query['chId']))?$this->request->query['chId']:null;
+        // pr($challengeId);
+        $pageId = (isset($this->request->query['p']))?$this->request->query['p']:null;
+        // pr($pageId); die;
+        $this->loadModel('FbPracticeInformation');
+        $this->loadModel('ChallengeWinners');
+        if((empty($challengeId) || !$challengeId) && (empty($pageId) || !$pageId)){
+            return $this->redirect(['action' => 'error']);
+        }
+        $fbPracticeInfoId = $this->FbPracticeInformation->findByFbPageId($pageId)->first()->get('id');
+
+        $challengeWinner = $this->ChallengeWinners->findByChallengeId($challengeId)
+                                                ->contain(['Challenges'])
+                                                ->where(['fb_practice_information_id' => $fbPracticeInfoId])
+                                                ->first();
+                                                
+        $activeChallenge = $challengeWinner->challenge;
+
+        $image_url = Router::url('/', true);
+        $image_url = $image_url.$activeChallenge->image_path.'/'.$activeChallenge->image_name;
+        $activeChallenge->image_url = $image_url;                                
+        $this->set(compact('activeChallenge', 'challengeWinner'));
+        $this->set('_serialize', ['challenge', 'challengeWinner']);
     }
 }
