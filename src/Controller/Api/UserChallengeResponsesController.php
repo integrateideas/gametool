@@ -22,6 +22,8 @@ class UserChallengeResponsesController extends ApiController
     public function add()
     {
         //find challenge by id from challenge table and check that challenge is active or inactive if its active then compare user response with the correct responses, and  save user challenge data in user challenge response table if they give correct response. 
+        // pr($this->request->data); die;
+        
         $this->request->data = $this->request->data['data'];
         $challengeId = $this->request->data['challenge_id'];
         $userChallengeResponse = $this->UserChallengeResponses->newEntity(); 
@@ -35,6 +37,7 @@ class UserChallengeResponsesController extends ApiController
 
         $this->loadModel('FbPracticeInformation');
         $fbPracticeInfoId = $this->FbPracticeInformation->findByPageId($this->request->data['p'])->first();
+        // pr($fbPracticeInfoId); die;
         $this->request->data['fb_practice_information_id'] = $fbPracticeInfoId->id;
         
         if ($this->request->is('post')) {

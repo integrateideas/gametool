@@ -7,6 +7,7 @@ use Cake\Routing\Router;
 use Cake\Cache\Cache;
 use Cake\Collection\Collection;
 use Cake\I18n\Time;
+use Cake\Network\Exception\NotFoundException;
 /**
  * Challenges Controller
  *
@@ -136,36 +137,6 @@ class ChallengesController extends AppController
         return $this->redirect(['action' => 'index']);
     }
 
-    // public function triviaWinner(){
-        
-    //     $this->loadModel('UserChallengeResponses');
-    //     $selectedWinneres = $this->UserChallengeResponses->find()
-    //                                                      ->contain('FbPracticeInformation')
-    //                                                      ->all()
-    //                                                      ->groupBy('fb_practice_information_id')
-    //                                                      ->toArray();
-
-    //     $data = [];
-    //     foreach ($selectedWinneres as $key => $value) {
-
-    //         $getRandomWinner = array_rand($value);
-    //         $result = $value[$getRandomWinner];
-    //         $data[] = [
-    //                     'user_id' => $result->user_id,
-    //                     'fb_practice_information_id'=> $result->fb_practice_information_id,
-    //                     'challenge_id'=>$result->challenge_id   
-    //                 ];
-    //     }
-         
-    //     $this->loadModel('ChallengeWinners');
-    //     $triviaWinner = $this->ChallengeWinners->newEntities($data);
-    //     $triviaWinner = $this->ChallengeWinners->patchEntities($triviaWinner, $data);
-
-    //     if($this->ChallengeWinners->saveMany($triviaWinner)){
-    //             pr('here');die;
-    //     }   
-    // }
-
      public function triviaWinner(){
         $this->loadModel('UserChallengeResponses');
         // active challenge id
@@ -227,23 +198,26 @@ class ChallengesController extends AppController
     public function activeChallenge(){
         $this->viewBuilder()->layout('facebookuser');
         $chId  = (isset($this->request->query['challenge']))?$this->request->query['challenge']:null;
-
-        if($chId){
-            $activeChallenge = $this->Challenges->find()
-                                            ->where(['id' =>$chId])
-                                            ->first();  
-                                            //if end time is there and challenge winner me entry hai to redirect to new page  
-        }else{
-            $activeChallenge = $this->Challenges->find()
-                                            ->where(['is_active IS NOT' => 0])
-                                            ->first();    
-        }
         $pageId  = (isset($this->request->query['p']))?$this->request->query['p']:null;
         if(!$pageId){
             $this->Flash->error(__('Invalid Request'));   
             return $this->redirect(['action' => 'error']);
         }
-        $image_url = Router::url('/', true);
+
+        if($chId){
+            $activeChallenge = $this->Challenges->find()
+                                            ->where(['id' =>$chId])
+                                            ->first();
+            if($activeChallenge){
+                return $this->redirect(['action' => 'winner', 'chId' => $chId, 'p' => $pageId]);
+            }  
+              
+        }else{
+            $activeChallenge = $this->Challenges->find()
+                                            ->where(['is_active IS NOT' => 0])
+                                            ->first();    
+        }
+                $image_url = Router::url('/', true);
         $image_url = $image_url.$activeChallenge->image_path.'/'.$activeChallenge->image_name;
         $url = Router::url(['controller'=>'Challenges','action'=>'activeChallenge'],true);
         $activeChallenge->url = $url;
@@ -251,6 +225,10 @@ class ChallengesController extends AppController
         $this->set(compact('activeChallenge'));
         $this->set(compact('pageId'));
         $this->set('_serialize', ['activeChallenge','pageId']);
+    }
+
+    public function responseSubmitted(){
+        $this->viewBuilder()->setLayout('trivia_winner');
     }
 
     // public function userFbPosts(){
@@ -292,21 +270,22 @@ class ChallengesController extends AppController
     public function winner(){
         $this->viewBuilder()->layout('facebookuser');
         $challengeId = (isset($this->request->query['chId']))?$this->request->query['chId']:null;
-        // pr($challengeId);
         $pageId = (isset($this->request->query['p']))?$this->request->query['p']:null;
-        // pr($pageId); die;
         $this->loadModel('FbPracticeInformation');
         $this->loadModel('ChallengeWinners');
         if((empty($challengeId) || !$challengeId) && (empty($pageId) || !$pageId)){
             return $this->redirect(['action' => 'error']);
         }
-        $fbPracticeInfoId = $this->FbPracticeInformation->findByFbPageId($pageId)->first()->get('id');
+        $fbPracticeInfoId = $this->FbPracticeInformation->findByPageId($pageId)->first()->get('id');
 
         $challengeWinner = $this->ChallengeWinners->findByChallengeId($challengeId)
                                                 ->contain(['Challenges'])
                                                 ->where(['fb_practice_information_id' => $fbPracticeInfoId])
                                                 ->first();
-                                                
+        if(!$challengeWinner){
+            throw new NotFoundException("Not Found");
+            
+        }                                                                               
         $activeChallenge = $challengeWinner->challenge;
 
         $image_url = Router::url('/', true);
