@@ -57,7 +57,8 @@ class AppController extends Controller
         'authError' => 'You should not be peeking around here'
         ]);
         
-        $this->Auth->allow(['add', 'index', 'edit', 'delete', 'view', 'activeChallenge','triviaWinner','winnerPage','responseSubmitted']);
+        $this->Auth->allow(['add', 'index', 'edit', 'delete', 'view',  'winner','activeChallenge','triviaWinner','winnerPage','responseSubmitted']);
+
         /*
          * Enable the following components for recommended CakePHP security settings.
          * see https://book.cakephp.org/3.0/en/controllers/components/security.html
