@@ -52,8 +52,9 @@ class ChallengesController extends AppController
         $challenge = $this->Challenges->get($id, [
             'contain' => ['ChallengeTypes', 'UserChallengeResponses']
             ]);
-
+        $url = Router::url(['controller'=>'Challenges','action'=>'activeChallenge','?'=>['challenge'=>$id]],true);
         $this->set('challenge', $challenge);
+        $this->set('url', $url);
         $this->set('_serialize', ['challenge']);
     }
 
