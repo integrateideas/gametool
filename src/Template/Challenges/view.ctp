@@ -11,6 +11,9 @@
         <div class="ibox-title">
             <h2><?= h($challenge->name) ?></h2>
         </div> <!-- ibox-title end-->
+         <div class="ibox-title">
+            share this url: <h2><?= h($url) ?></h2>
+        </div> <!-- ibox-title end-->
         <div class="ibox-content">
     <table class="table">
         <tr>
