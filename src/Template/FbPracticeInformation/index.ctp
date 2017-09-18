@@ -28,9 +28,9 @@
                         <?php foreach ($fbPracticeInformation as $fbPracticeInformation): ?>
                         <tr>
                                         <td><?= $this->Number->format($fbPracticeInformation->id) ?></td>
-                                        <td><?= h($fbPracticeInformation->practice_name) ?></td>
-                                        <td><?= $this->Number->format($fbPracticeInformation->fb_page_id) ?></td>
-                                        <td><?= $this->Number->format($fbPracticeInformation->buzzydoc_vendor_id) ?></td>
+                                        <td><?= (($fbPracticeInformation->practice_name))? h($fbPracticeInformation->practice_name): 'not-provided' ?></td>
+                                        <td><?= h($fbPracticeInformation->page_name) ?></td>
+                                        <td><?= ($fbPracticeInformation->buzzydoc_vendor_id) ? h($fbPracticeInformation->buzzydoc_vendor_id): 'not-provided' ?></td>
                                         <td><?= h($fbPracticeInformation->status) ?></td>
                                         <td><?= h($fbPracticeInformation->created) ?></td>
                                         <td><?= h($fbPracticeInformation->modified) ?></td>

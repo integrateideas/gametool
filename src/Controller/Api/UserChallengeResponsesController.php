@@ -34,7 +34,7 @@ class UserChallengeResponsesController extends ApiController
                                                      ->first();
 
         $this->loadModel('FbPracticeInformation');
-        $fbPracticeInfoId = $this->FbPracticeInformation->findByPageId($this->request->data['page_id'])->first();
+        $fbPracticeInfoId = $this->FbPracticeInformation->findByPageId($this->request->data['p'])->first();
         $this->request->data['fb_practice_information_id'] = $fbPracticeInfoId->id;
         
         if ($this->request->is('post')) {

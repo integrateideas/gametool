@@ -19,7 +19,7 @@ use Cake\Cache\Cache;
  */
 class UsersController extends AppController
 {
-const USER_LABEL='user';
+    const USER_LABEL='superAdmin';
     public function initialize()
     {
         parent::initialize();
@@ -44,8 +44,6 @@ const USER_LABEL='user';
      */
     public function index()
     {
-        // $response = $this->FbGraphApi->postOnFb('2523215881152447','hello dj sdfsd',null,'EAADqlEo5enwBAOWc5VprS2G1yhp8mF2vsQ01KvFuKyfe0O8NBiGKzlcGdVVCLKlMmRDhbkg12LW4rhfahZAkiB8hxCCaScZBHzbTgE1FgTc8YXCvXIsWOsdTEb3CaG7bCTeiIISjyJG8Sv7PadbSqpZB0u3jcwQOJySU99OVX2iqmG7FsAn',false);
-        
         $this->paginate = [
         'contain' => ['Roles']
         ];
@@ -139,7 +137,65 @@ const USER_LABEL='user';
 
         return $this->redirect(['action' => 'index']);
     }
-    
+     private function _syncFbPages(){
+        $getFbPages = $this->FbGraphApi->getPages(true);
+        $patch = [];
+        $newData = [];
+        $pages = [];
+        $patchEntities = [];
+        if(!empty($getFbPages)){           
+            foreach ($getFbPages['response'] as $key => $value) {
+             
+                $pages[$value->id] = $value;
+            }
+            if(empty($pages)){
+              return;
+            }
+            $pageIds = array_keys($pages);
+            // pr($pageIds);die;
+            $this->loadModel('FbPracticeInformation');
+            $savedData = $this->FbPracticeInformation->find()->where(['page_id IN' => $pageIds])->all()->toArray();
+            foreach ($savedData as $key => $savedValue) {
+                
+                $patch[$savedValue->page_id] = [
+                                    'id' => $savedValue->id,
+                                    'page_token' => $pages[$savedValue->page_id]->access_token,
+                                    'page_name' => $pages[$savedValue->page_id]->name
+                                ];
+
+            }
+            $getPatchIds = array_keys($patch);
+            $newIds = array_diff($pageIds,$getPatchIds);
+
+            if(!empty($newIds)){
+
+                foreach ($newIds as $key => $newId) {
+                    $newData[] = [
+                                    'page_id' => $pages[$newId]->id,
+                                    'page_name' => $pages[$newId]->name,
+                                    'page_token' => $pages[$newId]->access_token,
+                                    'user_id' => $this->Auth->User('id'),
+                                    'status' => 1
+                                ];
+                }
+                $newEntities = $this->FbPracticeInformation->newEntities($newData);
+                $patchEntities = $this->FbPracticeInformation->patchEntities($newEntities,$newData);
+            }
+
+            if(!empty($patch)){
+
+                $updateData = $this->FbPracticeInformation->patchEntities($savedData,$patch);
+                $patchEntities = array_merge($patchEntities,$updateData);
+            }
+            
+            if($this->FbPracticeInformation->saveMany($patchEntities)){
+            }else{
+                Log::config('error', $this->error());
+            }
+        }else{
+          Log::config('error', $getFbPages);
+        }
+    }
     public function login()
     {
         $this->viewBuilder()->layout('login-admin');
@@ -153,8 +209,9 @@ const USER_LABEL='user';
               $this->loadModel('Roles');
               $user['role']=$query = $this->Roles->find('RolesById',['role' =>$user['role_id']])->select(['name','label'])->first();
               $this->Auth->setUser($user);
+              $this->_syncFbPages();
               if( !empty($query) && $query->name == self::USER_LABEL){
-                $this->redirect(['controller' => 'Users',
+                $this->redirect(['controller' => 'Challenges',
                     'action' => 'index'
                     ]);
                 return;

@@ -12,6 +12,7 @@
                     <h2><?= h($activeChallenge->instruction) ?></h2>
             </div>
             <?= $this->Form->input('challenge_id', ['id'=>'challenge_id','value' =>$activeChallenge->id,'type'=>'hidden']); ?>
+            <?= $this->Form->input('pageId', ['id'=>'page_id','value' =>$pageId,'type'=>'hidden']); ?>
             <?php
                 if($activeChallenge->challenge_type_id == 1 || $activeChallenge->challenge_type_id == 4 || $activeChallenge->challenge_type_id == 5){
                     if(isset($activeChallenge->details['link'])) {
@@ -94,7 +95,7 @@
                 'response' : value,
                 'identifier_type' : identifierType,
                 'identifier_value' : identifierValue,
-                'page_id' : '2523215881152447'
+                'p' : $('#page_id').val()
 
             });
             $.ajax({
