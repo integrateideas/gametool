@@ -223,8 +223,9 @@ class ChallengesController extends AppController
         }
         // pr($activeChallenge); die;
         $image_url = Router::url('/', true);
-        $image_url = $image_url.$activeChallenge->image_path.'/'.$activeChallenge->image_name;
-        $url = Router::url(['controller'=>'Challenges','action'=>'activeChallenge','?'=>['chId' => $chId, 'p' => $pageId]],true);
+        $image_url = $image_url.$activeChallenge->image_path.'/'.$activeChallenge->image_name.'?'.$chId.$pageId;
+        $slug = strtolower(Text::slug($challenge->name));
+        $url = Router::url(['controller'=>$slug.'/challenge','?'=>['chId' => $chId, 'p' => $pageId]],true);
         $activeChallenge->url = $url;
         $activeChallenge->image_url = $image_url;                                
         $this->set(compact('activeChallenge'));
