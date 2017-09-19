@@ -110,22 +110,7 @@
     </div>
 </div>
 
-   <script src="<?php echo $this->request->webroot;?>js/datapicker/bootstrap-datepicker.js"></script>
-
-
-
 <script type="text/javascript">
-
-/*calender*/
-
-$('#data_1 .input-group.date').datepicker({
-    todayBtn: "linked",
-    keyboardNavigation: false,
-    forceParse: false,
-    calendarWeeks: true,
-    autoclose: true
-});
-
 
 $(document).on('change', 'select', function() {
     console.log($(this).val()); // the selected options’s value

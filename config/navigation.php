@@ -20,6 +20,12 @@ return [ 'Menu' =>
                                                    'controller' => 'Challenges',
                                                    'action' => 'add'
                                                   ],
+                                          ],
+                                          'Challenge Winners' => [
+                                        'link' => [
+                                                   'controller' => 'Challenges',
+                                                   'action' => 'challengeWinners'
+                                                  ],
                                           ] 
                                   ] 
                             ],
