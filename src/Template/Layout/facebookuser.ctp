@@ -20,24 +20,13 @@
 	<meta property="og:locale" content="en_US" />
 	<meta property="og:type" content="article" />
 	<meta property="og:title" content="Trivia Game | <?= $activeChallenge->name ?>" />
-	<!-- <meta property="og:description" content="Facebook&#039;s Open Graph protocol allows for web developers to turn their websites into Facebook &quot;graph&quot; objects, allowing a certain level of customization over how information is carried over from a non-Facebook website to Facebook when a page is &quot;recommended&quot; and &quot;liked&quot;." /> -->
 	<meta property="og:url" content="<?= $activeChallenge->url ?>" />
 	<meta property="og:site_name" content="Trivia Game | <?= $activeChallenge->name ?>" />
-	<meta property="article:publisher" content="https://www.facebook.com/davidwalshblog" />
 	<meta property="article:section" content="APIs" />
 	<meta property="article:published_time" content="<?= $activeChallenge->created ?>" />
 	<meta property="article:modified_time" content="<?= $activeChallenge->modified ?>" />
 	<meta property="og:updated_time" content="<?= $activeChallenge->modified ?>" />
 	<meta property="og:image" content="<?= $activeChallenge->image_url ?>" />
-	<meta property="og:image:secure_url" content="<?= $activeChallenge->image_url ?>" />
-	<meta property="og:image" content="https://davidwalsh.name/demo/david-facebook-share.png" />
-	<meta property="og:image:secure_url" content="https://davidwalsh.name/demo/david-facebook-share.png" />
-	<meta name="twitter:card" content="summary_large_image" />
-	<meta name="twitter:description" content="Facebook&#039;s Open Graph protocol allows for web developers to turn their websites into Facebook &quot;graph&quot; objects, allowing a certain level of customization over how information is carried over from a non-Facebook website to Facebook when a page is &quot;recommended&quot; and &quot;liked&quot;." />
-	<meta name="twitter:title" content="Trivia Game | <?= $activeChallenge->name ?>" />
-	<meta name="twitter:site" content="@davidwalshblog" />
-	<meta name="twitter:image" content="<?= $activeChallenge->image_url ?>" />
-	<meta name="twitter:creator" content="@davidwalshblog" />
 
 	<?php echo $this->Html->meta('favicon.ico','img/favicon.ico',array('type' => 'icon'));?>
 	<!-- css and js plugins -->
