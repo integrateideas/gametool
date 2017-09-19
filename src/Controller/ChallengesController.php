@@ -8,6 +8,7 @@ use Cake\Cache\Cache;
 use Cake\Collection\Collection;
 use Cake\I18n\Time;
 use Cake\Network\Exception\NotFoundException;
+use Cake\Utility\Text;
 /**
  * Challenges Controller
  *
@@ -52,7 +53,8 @@ class ChallengesController extends AppController
         $challenge = $this->Challenges->get($id, [
             'contain' => ['ChallengeTypes', 'UserChallengeResponses']
             ]);
-        $url = Router::url(['controller'=>'Challenges','action'=>'activeChallenge','?'=>['challenge'=>$id]],true);
+        $slug = strtolower(Text::slug($challenge->name));
+        $url = Router::url(['controller'=>$slug.'/challenge','?'=>['chId'=>$id]],true);
         $this->set('challenge', $challenge);
         $this->set('url', $url);
         $this->set('_serialize', ['challenge']);
@@ -198,29 +200,32 @@ class ChallengesController extends AppController
 
     public function activeChallenge(){
         $this->viewBuilder()->layout('facebookuser');
-        $chId  = (isset($this->request->query['challenge']))?$this->request->query['challenge']:null;
+        $chId  = (isset($this->request->query['chId']))?$this->request->query['chId']:null;
         $pageId  = (isset($this->request->query['p']))?$this->request->query['p']:null;
         if(!$pageId){
             $this->Flash->error(__('Invalid Request'));   
             return $this->redirect(['action' => 'error']);
         }
 
-        if($chId){
+        if(!$chId){
             $activeChallenge = $this->Challenges->find()
-                                            ->where(['id' =>$chId])
-                                            ->first();
-            if($activeChallenge){
-                return $this->redirect(['action' => 'winner', 'chId' => $chId, 'p' => $pageId]);
-            }  
-              
-        }else{
-            $activeChallenge = $this->Challenges->find()
-                                            ->where(['is_active IS NOT' => 0])
+                                            ->where(['is_active' => 1])
                                             ->first();    
+        }else{
+
+            $activeChallenge = $this->Challenges->findById($chId)
+                                                ->first();
+
+            if(!$activeChallenge->is_active){
+                return $this->redirect(['action' => 'winner', '?'=>['chId' => $chId, 'p' => $pageId]]);
+            }  
+            
         }
-                $image_url = Router::url('/', true);
+        // pr($activeChallenge); die;
+        $image_url = Router::url('/', true);
         $image_url = $image_url.$activeChallenge->image_path.'/'.$activeChallenge->image_name;
-        $url = Router::url(['controller'=>'Challenges','action'=>'activeChallenge'],true);
+        $slug = strtolower(Text::slug($activeChallenge->name));
+        $url = Router::url(['controller'=>$slug.'/challenge','?'=>['chId' => $chId, 'p' => $pageId]],true);
         $activeChallenge->url = $url;
         $activeChallenge->image_url = $image_url;                                
         $this->set(compact('activeChallenge'));
@@ -274,19 +279,20 @@ class ChallengesController extends AppController
         $pageId = (isset($this->request->query['p']))?$this->request->query['p']:null;
         $this->loadModel('FbPracticeInformation');
         $this->loadModel('ChallengeWinners');
-        if((empty($challengeId) || !$challengeId) && (empty($pageId) || !$pageId)){
+        if(!$challengeId || !$pageId){
             return $this->redirect(['action' => 'error']);
         }
         $fbPracticeInfoId = $this->FbPracticeInformation->findByPageId($pageId)->first()->get('id');
 
         $challengeWinner = $this->ChallengeWinners->findByChallengeId($challengeId)
                                                 ->contain(['Challenges'])
-                                                ->where(['fb_practice_information_id' => $fbPracticeInfoId])
+                                                ->where([
+                                                    'fb_practice_information_id' => $fbPracticeInfoId
+                                                    ])
                                                 ->first();
         if(!$challengeWinner){
-            throw new NotFoundException("Not Found");
-            
-        }                                                                               
+            die(' no one played the game');
+        }                                                                                 
         $activeChallenge = $challengeWinner->challenge;
 
         $image_url = Router::url('/', true);
