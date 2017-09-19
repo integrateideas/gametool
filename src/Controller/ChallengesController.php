@@ -8,6 +8,7 @@ use Cake\Cache\Cache;
 use Cake\Collection\Collection;
 use Cake\I18n\Time;
 use Cake\Network\Exception\NotFoundException;
+use Cake\Utility\Text;
 /**
  * Challenges Controller
  *
@@ -52,7 +53,8 @@ class ChallengesController extends AppController
         $challenge = $this->Challenges->get($id, [
             'contain' => ['ChallengeTypes', 'UserChallengeResponses']
             ]);
-        $url = Router::url(['controller'=>'Challenges','action'=>'activeChallenge','?'=>['challenge'=>$id]],true);
+        $slug = strtolower(Text::slug($challenge->name));
+        $url = Router::url(['controller'=>$slug.'/challenge','?'=>['chId'=>$id]],true);
         $this->set('challenge', $challenge);
         $this->set('url', $url);
         $this->set('_serialize', ['challenge']);

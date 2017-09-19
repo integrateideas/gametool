@@ -49,6 +49,14 @@ Router::scope('/', function (RouteBuilder $routes) {
      * its action called 'display', and we pass a param to select the view file
      * to use (in this case, src/Template/Pages/home.ctp)...
      */
+    $routes->connect(
+    ':slug/challenge/',
+    ['controller' => 'Challenges', 'action' => 'activeChallenge']
+)->setMethods(['GET', 'POST'])->setPass(['slug'])->setPatterns([
+    'slug' => '[a-z0-9-_]+',
+    'lang' => 'en',
+]);
+
     $routes->connect('/', ['controller' => 'Pages', 'action' => 'display', 'home']);
 
     /**
