@@ -200,7 +200,7 @@ class ChallengesController extends AppController
 
     public function activeChallenge(){
         $this->viewBuilder()->layout('facebookuser');
-        $chId  = (isset($this->request->query['challenge']))?$this->request->query['challenge']:null;
+        $chId  = (isset($this->request->query['chId']))?$this->request->query['chId']:null;
         $pageId  = (isset($this->request->query['p']))?$this->request->query['p']:null;
         if(!$pageId){
             $this->Flash->error(__('Invalid Request'));   
@@ -223,7 +223,7 @@ class ChallengesController extends AppController
         }
         // pr($activeChallenge); die;
         $image_url = Router::url('/', true);
-        $image_url = $image_url.$activeChallenge->image_path.'/'.$activeChallenge->image_name.'?'.$chId.$pageId;
+        $image_url = $image_url.$activeChallenge->image_path.'/'.$activeChallenge->image_name;
         $slug = strtolower(Text::slug($activeChallenge->name));
         $url = Router::url(['controller'=>$slug.'/challenge','?'=>['chId' => $chId, 'p' => $pageId]],true);
         $activeChallenge->url = $url;
