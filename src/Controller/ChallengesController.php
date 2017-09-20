@@ -34,7 +34,8 @@ class ChallengesController extends AppController
     {
 
         $this->paginate = [
-        'contain' => ['ChallengeTypes']
+        'contain' => ['ChallengeTypes'],
+        'conditions' => ['user_id' => $this->Auth->user('id')]
         ];
         $challenges = $this->paginate($this->Challenges);
 
@@ -74,6 +75,7 @@ class ChallengesController extends AppController
                 $this->request->data['details'] = null;
                 $this->request->data['response'] = null;
             }
+            $this->request->data['user_id'] = $this->Auth->user('id');
             // Converting end-time into UTC Timezone.
             $dateTime = $this->request->data['end_time'];
             $new_date = new Time($dateTime);
