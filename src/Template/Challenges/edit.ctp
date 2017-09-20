@@ -4,11 +4,14 @@
 
   */
 ?>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/js/bootstrap-datetimepicker.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/css/bootstrap-datetimepicker.min.css">
 <div class="row">
-	<div class="col-lg-12">
-		<div class="ibox float-e-margins">
-			<div class="ibox-content">
-				<div class="challenges form large-9 medium-8 columns content">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-content">
+                <div class="challenges form large-9 medium-8 columns content">
     <?= $this->Form->create($challenge, ['enctype'=>"multipart/form-data"]) ?>
     <fieldset>
         <div class = 'ibox-title'>
@@ -35,6 +38,23 @@
                                     <?= $this->Form->input('image_name', ['accept'=>"image/*",'label' => false,['class' => 'form-control'],'type' => "file",'id'=>'imgChange']); ?>
                                 </div>
                             </div>
+                            <div class="hr-line-dashed"></div>
+                            <div class="form-group" id="data_1">
+                                <label class="col-sm-2 control-label">
+                                        End Time
+                                    </label>
+                                <div class="col-sm-7">
+                                    <div class="form-group">
+                                        <div class='input-group date datetimepicker_curr' id='datetimepicker'>
+                                            <input type='text' class="form-control" / name="end_time" value="<?= $date?>">
+                                            <span class="input-group-addon">
+                                                <span class="glyphicon glyphicon-calendar" ></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="hr-line-dashed"></div>
                         <div id = "read-article" >
                             <?php
                                 $question_type = [
@@ -90,11 +110,25 @@
     <?= $this->Form->end() ?>
 </div>
 
-			</div> <!-- .ibox-content ends --> 
-		</div> <!-- .ibox ends -->
-	</div> <!-- .col-lg-12 ends -->
+            </div> <!-- .ibox-content ends --> 
+        </div> <!-- .ibox ends -->
+    </div> <!-- .col-lg-12 ends -->
 </div> <!-- .row ends -->
 
+<script type="text/javascript">
+var datetime = '<?= $date?>';
+// alert(datetime);
+console.log(datetime);
+    /*$(document).ready(function(){
+        $('.datetimepicker_curr').datepicker("datetime", new Date());
+    });*/
+    $(function () {
+        $('#datetimepicker').datetimepicker({
+            minDate:moment()
+        });
+
+    });
+</script>
 <script type="text/javascript">
 
 $(document).ready(function(){
