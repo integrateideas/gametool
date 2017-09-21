@@ -156,7 +156,7 @@ class TriviaWinnerShell extends Shell
                 $pageId =$winner->fb_practice_information->page_id; 
                 
                 $url = "/$pageId/photos";
-                $fileUrl = Configure::read('application.endpoint').'challenge_images/trivia_post_winner_fb_98765.png';
+                $fileUrl = Configure::read('application.baseUrl').'challenge_images/trivia_post_winner_fb_98765.png';
                 pr($fileUrl);die;
                 $data = [
                 'caption'=>'Winner of the challenge named '.$activeChallenge->name .'is: '.$winner->identifier_value,
