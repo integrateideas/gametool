@@ -37,6 +37,24 @@
                                     <?= $this->Form->input('image_name', ['accept'=>"image/*",'label' => false,'required' => true,['class' => 'form-control'],'type' => "file",'id'=>'imgChange']); ?>
                                 </div>
                             </div>
+                            <?= $this->Form->control('image_details.text-color', ['required' => true]);?>
+                            <?= $this->Form->control('image_details.text-shadow-color', ['required' => true]);?>
+                            <div class="hr-line-dashed"></div>
+                            <div>
+                                <?php 
+                                        $positions = [
+                                                        'top' => 'Top',
+                                                        'center' => 'Center',
+                                                        'left' => 'Left',
+                                                        'right' => 'Right',
+                                                        'top left' => 'Top-Left',
+                                                        'top right' => 'Top-Right'  
+
+                                                     ]; 
+                                echo $this->Form->control('image_details.text-position', ['options' => $positions, 'empty' => '---Please Select---', 'required' => true]);
+                                ?>
+                            </div>
+                            <?= $this->Form->control('image_details.text-font-size', ['min' => 50, 'required' => true]);?>
                             <div class="hr-line-dashed"></div>
                             <div class="form-group" id="data_1">
                                 <label class="col-sm-2 control-label">

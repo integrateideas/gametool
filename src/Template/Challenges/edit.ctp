@@ -38,6 +38,27 @@
                                     <?= $this->Form->input('image_name', ['accept'=>"image/*",'label' => false,['class' => 'form-control'],'type' => "file",'id'=>'imgChange']); ?>
                                 </div>
                             </div>
+                            <?= $this->Form->control('image_details.text-color', ['required' => true]);?>
+                            <?= $this->Form->control('image_details.text-shadow-color', ['required' => true]);?>
+                            <div class="hr-line-dashed"></div>
+                            <div>
+                                <?php 
+                                        $positions = [
+                                                        'top' => 'Top',
+                                                        'bottom' => 'Bottom',
+                                                        'center' => 'Center',
+                                                        'left' => 'Left',
+                                                        'right' => 'Right',
+                                                        'top left' => 'Top-Left',
+                                                        'top right' => 'Top-Right',
+                                                        'bottom left'=> 'Bottom-Left',
+                                                        'bottom right' => 'Bottom-Right'    
+
+                                                     ]; 
+                                echo $this->Form->control('image_details.text-position', ['options' => $positions, 'empty' => '---Please Select---', 'required' => true]);
+                                ?>
+                            </div>
+                            <?= $this->Form->control('image_details.text-font-size',['min' => 50, 'required' => true]);?>
                             <div class="hr-line-dashed"></div>
                             <div class="form-group" id="data_1">
                                 <label class="col-sm-2 control-label">
@@ -46,7 +67,7 @@
                                 <div class="col-sm-7">
                                     <div class="form-group">
                                         <div class='input-group date datetimepicker_curr' id='datetimepicker'>
-                                            <input type='text' class="form-control" / name="end_time" value="<?= $date?>">
+                                            <input type='text' class="form-control" name="end_time" value="<?= $date ?>">
                                             <span class="input-group-addon">
                                                 <span class="glyphicon glyphicon-calendar" ></span>
                                             </span>

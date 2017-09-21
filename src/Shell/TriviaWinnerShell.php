@@ -20,6 +20,7 @@ use Cake\Log\Log;
 use Cake\Collection\Collection;
 use Psy\Shell as PsyShell;
 use Cake\Core\Configure;
+use Cake\Routing\Router;
 
 
 
@@ -119,7 +120,6 @@ class TriviaWinnerShell extends Shell
       }       
     }
 
-
     private function _postWinnerOnFb($activeChallengeId){
      $this->loadModel('Challenges');
 
@@ -132,52 +132,79 @@ class TriviaWinnerShell extends Shell
       'app_secret' =>Configure::read('application.fbAppSecret'),
       'default_graph_version' => 'v2.9',
       ]);
+
      foreach ($activeChallenge->challenge_winners as $key => $winner) {
+      try {
+              // Create a new SimpleImage object
+        $image = new \claviska\SimpleImage();
+        $image
+                ->fromFile(WWW_ROOT.'/challenge_images/'.$activeChallenge->image_name)                     // load image.jpg
+                ->autoOrient()                              // adjust orientation based on exif data
+                ->text('Winner of '.$activeChallenge->name.' is ',['color'=> $activeChallenge->image_details['text-color'], 
+                  'anchor'=> $activeChallenge->image_details['text-position'],
+                  'size'=> $activeChallenge->image_details['text-font-size'],
+                  'yOffset'=>-80,
+                  'fontFile'=>WWW_ROOT.'fonts/Futura-Std-Book.ttf'])
+                ->text(ucfirst($winner->identifier_value),['color'=> $activeChallenge->image_details['text-color'], 
+                  'anchor'=> $activeChallenge->image_details['text-position'],
+                  'yOffset'=>50,
+                  'shadow'=>['x'=>2,'y'=>10,'color'=>$activeChallenge->image_details['text-shadow-color']],
+                  'size'=> $activeChallenge->image_details['text-font-size']*2,
+                  'fontFile'=>WWW_ROOT.'fonts/Futura-Std-Book.ttf'])  
+                ->toFile(WWW_ROOT.'/challenge_images/trivia_post_winner_fb_98765.png', 'image/png');
 
-      $pageId =$winner->fb_practice_information->page_id; 
-      $url = "/$pageId/feed";
-      $data = [
-      'message'=>'Winner of the challenge named '.$activeChallenge->name .'is: '.$winner->identifier_value,
-      ];
-      $response =  $this->_fb->post($url,$data, $winner->fb_practice_information->page_token);
+                $pageId =$winner->fb_practice_information->page_id; 
+                
+                $url = "/$pageId/photos";
+                $fileUrl = Configure::read('application.endpoint').'challenge_images/trivia_post_winner_fb_98765.png';
+                pr($fileUrl);die;
+                $data = [
+                'caption'=>'Winner of the challenge named '.$activeChallenge->name .'is: '.$winner->identifier_value,
+                'url'=>$fileUrl
+                ];
+                
+                $response =  $this->_fb->post($url,$data, $winner->fb_practice_information->page_token);
       //award points
-      pr($response);
-    }
-  }
+                pr($response);
+              } catch(Exception $err) {
+                pr($err->getMessage());
+              }
+            }
+          }
 
-   public function endChallenge(){
-     $this->loadModel('Challenges');
+          public function endChallenge(){
+           $this->loadModel('Challenges');
 
-      $activeChallenge = $this->Challenges->find()
-                                         ->where(['is_active'=> 1])
-                                         ->first();
+           $activeChallenge = $this->Challenges->find()
+           ->where(['is_active'=> 1])
+           ->first();
       // pr($activeChallenge);die;
-                                         if(!$activeChallenge){
-                                          return false;
-                                         }
-      $currentTime = date('Y-m-d H:i:s');
-      $currentTime = strtotime($currentTime);
+           if(!$activeChallenge){
+            return false;
+          }
+          $currentTime = date('Y-m-d H:i:s');
+          $currentTime = strtotime($currentTime);
 
-      $activeChallengeEndTime = $activeChallenge['end_time'];
-      $activeChallengeEndTime = strtotime($activeChallengeEndTime);
-      if($currentTime >= $activeChallengeEndTime){
-          
-          $data = [
-                    'id' => $activeChallenge['id'],
-                    'is_active' => 0
-                  ];
-          $challenge = $this->Challenges->patchEntity($activeChallenge, $data);  
+          $activeChallengeEndTime = $activeChallenge['end_time'];
+          $activeChallengeEndTime = strtotime($activeChallengeEndTime);
+          if($currentTime >= $activeChallengeEndTime){
 
-          if($this->Challenges->save($challenge)){
-                echo "Challenge end Successfully";
-                $this->_triviaWinner($activeChallenge['id']);
-                $this->_postWinnerOnFb($activeChallenge['id']);
-                pr($challenge);
+            $data = [
+            'id' => $activeChallenge['id'],
+            'is_active' => 0
+            ];
+            $challenge = $this->Challenges->patchEntity($activeChallenge, $data);  
+
+            if($this->Challenges->save($challenge)){
+              echo "Challenge end Successfully";
+              $this->_triviaWinner($activeChallenge['id']);
+              $this->_postWinnerOnFb($activeChallenge['id']);
+              pr($challenge);
             }else{
-                Log::config('error', $this->error());
-          }      
+              Log::config('error', $this->error());
+            }      
+          }
+        }
       }
-  }
-}
 
 

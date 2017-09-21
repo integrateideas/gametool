@@ -30,6 +30,7 @@ class ChallengesTable extends Table
    protected function _initializeSchema(TableSchema $schema){
         
         $schema->columnType('details', 'json');
+        $schema->columnType('image_details', 'json');
         return $schema;
     }
 
