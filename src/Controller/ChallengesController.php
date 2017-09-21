@@ -75,12 +75,14 @@ class ChallengesController extends AppController
                 $this->request->data['details'] = null;
                 $this->request->data['response'] = null;
             }
+            $this->request->data['image_name']['name'] = str_replace(' ', '_', $this->request->data['image_name']['name']);
             $this->request->data['user_id'] = $this->Auth->user('id');
             // Converting end-time into UTC Timezone.
             $dateTime = $this->request->data['end_time'];
             $new_date = new Time($dateTime);
             $this->request->data['end_time'] = $new_date;
             $challenge = $this->Challenges->patchEntity($challenge, $this->request->getData());
+            // pr($challenge); die;
             if ($this->Challenges->save($challenge)) {
                 $this->Flash->success(__('The challenge has been saved.'));
 
@@ -113,6 +115,9 @@ class ChallengesController extends AppController
         $oldImageName = $challenge->image_name;
         $path = Configure::read('ImageUpload.uploadPathForChallengeImages');
         if ($this->request->is(['patch', 'post', 'put'])) {
+            if(isset($this->request->data['image_name'])){
+               $this->request->data['image_name']['name'] = str_replace(' ', '_', $this->request->data['image_name']['name']); 
+            }
             $challenge = $this->Challenges->patchEntity($challenge, $this->request->getData());
             if ($this->Challenges->save($challenge)) {
                 $this->Flash->success(__('The challenge has been saved.'));
@@ -269,8 +274,9 @@ class ChallengesController extends AppController
               // Create a new SimpleImage object
                   $image = new \claviska\SimpleImage();
                   $image
-                ->fromFile(WWW_ROOT.'/challenge_images/'.$activeChallenge->image_name)                     // load image.jpg
-                ->autoOrient()                              // adjust orientation based on exif data
+                ->fromFile(WWW_ROOT.'challenge_images/'.$activeChallenge->image_name)                     // load image.jpg
+                ->autoOrient()  // adjust orientation based on exif data
+                ->resize(1000, 600)                            
                 ->text('Winner of '.$activeChallenge->name.' is ',['color'=> $activeChallenge->image_details['text-color'], 
                 'anchor'=> $activeChallenge->image_details['text-position'],
                 'size'=> $activeChallenge->image_details['text-font-size'],
@@ -278,7 +284,7 @@ class ChallengesController extends AppController
                 'fontFile'=>WWW_ROOT.'fonts/Futura-Std-Book.ttf'])
                 ->text(ucfirst($challengeDetails->identifier_value),['color'=> $activeChallenge->image_details['text-color'], 
                 'anchor'=> $activeChallenge->image_details['text-position'],
-                'yOffset'=>50,
+                'yOffset'=>80,
                 'shadow'=>['x'=>2,'y'=>10,'color'=>$activeChallenge->image_details['text-shadow-color']],
                 'size'=> $activeChallenge->image_details['text-font-size']*2,
                 'fontFile'=>WWW_ROOT.'fonts/Futura-Std-Book.ttf'])  
