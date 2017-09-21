@@ -138,8 +138,9 @@ class TriviaWinnerShell extends Shell
               // Create a new SimpleImage object
         $image = new \claviska\SimpleImage();
         $image
-                ->fromFile(WWW_ROOT.'/challenge_images/'.$activeChallenge->image_name)                     // load image.jpg
-                ->autoOrient()                              // adjust orientation based on exif data
+                ->fromFile(WWW_ROOT.'challenge_images/'.$activeChallenge->image_name)  // load image
+                ->autoOrient() // adjust orientation based on exif data
+                ->resize(1000, 600)
                 ->text('Winner of '.$activeChallenge->name.' is ',['color'=> $activeChallenge->image_details['text-color'], 
                   'anchor'=> $activeChallenge->image_details['text-position'],
                   'size'=> $activeChallenge->image_details['text-font-size'],
@@ -147,7 +148,7 @@ class TriviaWinnerShell extends Shell
                   'fontFile'=>WWW_ROOT.'fonts/Futura-Std-Book.ttf'])
                 ->text(ucfirst($winner->identifier_value),['color'=> $activeChallenge->image_details['text-color'], 
                   'anchor'=> $activeChallenge->image_details['text-position'],
-                  'yOffset'=>50,
+                  'yOffset'=>80,
                   'shadow'=>['x'=>2,'y'=>10,'color'=>$activeChallenge->image_details['text-shadow-color']],
                   'size'=> $activeChallenge->image_details['text-font-size']*2,
                   'fontFile'=>WWW_ROOT.'fonts/Futura-Std-Book.ttf'])  
@@ -156,8 +157,7 @@ class TriviaWinnerShell extends Shell
                 $pageId =$winner->fb_practice_information->page_id; 
                 
                 $url = "/$pageId/photos";
-                $fileUrl = Configure::read('application.baseUrl').'challenge_images/trivia_post_winner_fb_98765.png';
-                pr($fileUrl);die;
+                $fileUrl = Configure::read('application.baseUrl').'/challenge_images/trivia_post_winner_fb_98765.png';
                 $data = [
                 'caption'=>'Winner of the challenge named '.$activeChallenge->name .'is: '.$winner->identifier_value,
                 'url'=>$fileUrl
@@ -178,7 +178,6 @@ class TriviaWinnerShell extends Shell
            $activeChallenge = $this->Challenges->find()
            ->where(['is_active'=> 1])
            ->first();
-      // pr($activeChallenge);die;
            if(!$activeChallenge){
             return false;
           }
