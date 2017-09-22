@@ -30,6 +30,7 @@ class ChallengesTable extends Table
    protected function _initializeSchema(TableSchema $schema){
         
         $schema->columnType('details', 'json');
+        $schema->columnType('image_details', 'json');
         return $schema;
     }
 
@@ -48,6 +49,11 @@ class ChallengesTable extends Table
         $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
+
+        $this->belongsTo('Users', [
+            'foreignKey' => 'user_id',
+            'joinType' => 'INNER'
+        ]);
 
         $this->belongsTo('ChallengeTypes', [
             'foreignKey' => 'challenge_type_id',
@@ -126,6 +132,7 @@ class ChallengesTable extends Table
     public function buildRules(RulesChecker $rules)
     {
         $rules->add($rules->existsIn(['challenge_type_id'], 'ChallengeTypes'));
+        $rules->add($rules->existsIn(['user_id'], 'Users'));
 
         return $rules;
     }

@@ -21,8 +21,10 @@ class FbPracticeInformationController extends AppController
     public function index()
     {
         $this->paginate = [
-            'contain' => []
+            'contain' => [],
+            'conditions' => ['user_id' => $this->Auth->user('id')]
         ];
+
         $fbPracticeInformation = $this->paginate($this->FbPracticeInformation);
 
         $this->set(compact('fbPracticeInformation'));

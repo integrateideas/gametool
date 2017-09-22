@@ -21,12 +21,12 @@
         <?php
                             echo $this->Form->control('name');
                             echo $this->Form->control('instruction');
-                            echo $this->Form->control('challenge_type_id', ['options' => $challengeTypes, 'empty' => '---Please Select---']);
+                            echo $this->Form->control('challenge_type_id', ['options' => $challengeTypes, 'empty' => '---Please Select---', 'required' => true]);
                             ?>
 
                             <div id = "share-wisdom" style = "display: none;">
                                 <?php
-                                    echo $this->Form->control('details.topic');
+                                    echo $this->Form->control('details.topic', ['required' => true]);
                                 ?>
                             </div>
                         <div class="form-group">
@@ -38,6 +38,42 @@
                                     <?= $this->Form->input('image_name', ['accept'=>"image/*",'label' => false,['class' => 'form-control'],'type' => "file",'id'=>'imgChange']); ?>
                                 </div>
                             </div>
+                            <?= $this->Form->control('image_details.text-color', ['required' => true]);?>
+                            <?= $this->Form->control('image_details.text-shadow-color', ['required' => true]);?>
+                            <div class="hr-line-dashed"></div>
+                            <div>
+                                <?php 
+                                        $positions = [
+                                                        'top' => 'Top',
+                                                        'bottom' => 'Bottom',
+                                                        'center' => 'Center',
+                                                        'left' => 'Left',
+                                                        'right' => 'Right',
+                                                        'top left' => 'Top-Left',
+                                                        'top right' => 'Top-Right',
+                                                        'bottom left'=> 'Bottom-Left',
+                                                        'bottom right' => 'Bottom-Right'    
+
+                                                     ]; 
+                                echo $this->Form->control('image_details.text-position', ['options' => $positions, 'empty' => '---Please Select---', 'required' => true]);
+                                ?>
+                            </div>
+                            <?= $this->Form->control('image_details.text-font-size',['min' => 50, 'required' => true]);?>
+                            <div class="form-group" id="data_1">
+                                <label class="col-sm-2 control-label">
+                                        Start Time
+                                    </label>
+                                <div class="col-sm-7">
+                                    <div class="form-group">
+                                        <div class='input-group date' id='datetimepicker'>
+                                            <input type='text' class="form-control" name="start_time" required="true" value="<?= $startDate ?>">
+                                            <span class="input-group-addon">
+                                                <span class="glyphicon glyphicon-calendar" ></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="hr-line-dashed"></div>
                             <div class="form-group" id="data_1">
                                 <label class="col-sm-2 control-label">
@@ -46,7 +82,7 @@
                                 <div class="col-sm-7">
                                     <div class="form-group">
                                         <div class='input-group date datetimepicker_curr' id='datetimepicker'>
-                                            <input type='text' class="form-control" / name="end_time" value="<?= $date?>">
+                                            <input type='text' class="form-control" name="end_time" value="<?= $date ?>" required = "true">
                                             <span class="input-group-addon">
                                                 <span class="glyphicon glyphicon-calendar" ></span>
                                             </span>
@@ -62,7 +98,7 @@
                                                     'One-Word' => 'One-Word'
                                                  ];
 
-                                echo $this->Form->control('details.question_type', ['options' => $question_type, 'empty' => '---Please Select---']);
+                                echo $this->Form->control('details.question_type', ['options' => $question_type, 'empty' => '---Please Select---', 'required' => true]);
                                 ?>
                                 <div class="form-group text">
                                     <label class="col-sm-2 control-label" for="details-statement">
@@ -70,7 +106,7 @@
                                     </label>
                                     <div class="col-sm-7">
                                         <div class="form-group text">
-                                            <input type="text" class="form-control" name="details[statement]" id="details-statement" value = '<?= $challenge->details['statement']?>'>
+                                            <input type="text" class="form-control" name="details[statement]" id="details-statement" value = '<?= $challenge->details['statement']?>' required = 'true'>
                                         </div>
                                     </div>
                                     <div class="col-sm-2" id = "multiple" >
@@ -97,7 +133,7 @@
                          </div>
                             <div id='fill-in-blanks'>         
                             <?php
-                                echo $this->Form->control('details.link');
+                                echo $this->Form->control('details.link', ['required' => true]);
                                 echo $this->Form->control('response');
                             ?>
                             </div>
@@ -123,7 +159,7 @@ console.log(datetime);
         $('.datetimepicker_curr').datepicker("datetime", new Date());
     });*/
     $(function () {
-        $('#datetimepicker').datetimepicker({
+        $('.date').datetimepicker({
             minDate:moment()
         });
 

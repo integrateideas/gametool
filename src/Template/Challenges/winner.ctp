@@ -1,4 +1,4 @@
-<div class="row">
+<!-- <div class="row">
 <div class="col-lg-12">
         <div class="ibox-content">
         <div class="row">
@@ -16,7 +16,7 @@
         </div>
         </div>
     </div>
-</div>
+</div> -->
 <!-- <script type="text/javascript">
     function popUp(){
         var data = [];

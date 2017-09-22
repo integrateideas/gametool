@@ -47,7 +47,13 @@ class UsersTable extends Table
             'foreignKey' => 'role_id',
             'joinType' => 'INNER'
         ]);
+        $this->hasMany('Challenges', [
+            'foreignKey' => 'user_id'
+        ]);
         $this->hasMany('ChallengeWinners', [
+            'foreignKey' => 'user_id'
+        ]);
+        $this->hasMany('FbPracticeInformation', [
             'foreignKey' => 'user_id'
         ]);
         $this->hasMany('UserSocialConnections', [
