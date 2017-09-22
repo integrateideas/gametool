@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\Collection\Collection;
 
 /**
  * FbPracticeInformation Controller
@@ -21,10 +22,10 @@ class FbPracticeInformationController extends AppController
     public function index()
     {
         $this->paginate = [
-            'contain' => []
+            'contain' => ['ChallengeWinners']
         ];
         $fbPracticeInformation = $this->paginate($this->FbPracticeInformation);
-
+        
         $this->set(compact('fbPracticeInformation'));
         $this->set('_serialize', ['fbPracticeInformation']);
     }

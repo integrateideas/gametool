@@ -57,8 +57,6 @@ class TriviaWinnerShell extends Shell
     private  function _triviaWinner($activeChallengeId){
         // $this->FbGraphApi =  new FbGraphApiComponent(new ComponentRegistry(), []);
         // $this->loadComponent('FbGraphApi'); 
-      $this->loadModel('Challenges');
-
       $this->loadModel('UserChallengeResponses');
       $userResponses = $this->UserChallengeResponses->findByChallengeId($activeChallengeId)
       ->where(['status' => 1])
@@ -121,7 +119,6 @@ class TriviaWinnerShell extends Shell
 
 
     private function _postWinnerOnFb($activeChallengeId){
-     $this->loadModel('Challenges');
 
      $activeChallenge = $this->Challenges->find()
      ->contain(['ChallengeWinners','ChallengeWinners.FbPracticeInformation'])
@@ -140,8 +137,6 @@ class TriviaWinnerShell extends Shell
       'message'=>'Winner of the challenge named '.$activeChallenge->name .'is: '.$winner->identifier_value,
       ];
       $response =  $this->_fb->post($url,$data, $winner->fb_practice_information->page_token);
-      //award points
-      pr($response);
     }
   }
 
@@ -172,7 +167,6 @@ class TriviaWinnerShell extends Shell
                 echo "Challenge end Successfully";
                 $this->_triviaWinner($activeChallenge['id']);
                 $this->_postWinnerOnFb($activeChallenge['id']);
-                pr($challenge);
             }else{
                 Log::config('error', $this->error());
           }      
