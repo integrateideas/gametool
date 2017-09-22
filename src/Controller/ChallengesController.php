@@ -107,6 +107,9 @@ class ChallengesController extends AppController
         $challenge = $this->Challenges->get($id, [
             'contain' => []
             ]);
+        $startDate = new \DateTime($challenge->start_time);
+        $startDate = $startDate->format('m/d/Y H:i A');
+
         $date = new \DateTime($challenge->end_time);
         $date = $date->format('m/d/Y H:i A');
 
@@ -127,7 +130,7 @@ class ChallengesController extends AppController
             $this->Flash->error(__('The challenge could not be saved. Please, try again.'));
         }
         $challengeTypes = $this->Challenges->ChallengeTypes->find('list', ['limit' => 200]);
-        $this->set(compact('challenge', 'challengeTypes','date'));
+        $this->set(compact('challenge', 'challengeTypes','date', 'startDate'));
         $this->set('_serialize', ['challenge']);
     }
 

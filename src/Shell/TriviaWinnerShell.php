@@ -18,7 +18,6 @@ use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Shell;
 use Cake\Log\Log;
 use Cake\Collection\Collection;
-use Psy\Shell as PsyShell;
 use Cake\Core\Configure;
 use Cake\Routing\Router;
 
@@ -164,7 +163,6 @@ class TriviaWinnerShell extends Shell
                 ];
                 
                 $response =  $this->_fb->post($url,$data, $winner->fb_practice_information->page_token);
-      //award points
                 pr($response);
               } catch(Exception $err) {
                 pr($err->getMessage());
