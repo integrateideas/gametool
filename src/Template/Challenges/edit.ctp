@@ -167,11 +167,6 @@ console.log((new Date(datetime)).format('Y-m-d h:i:s'));
     
 </script> -->
 <script type="text/javascript">
-=======
-    /*$(document).ready(function(){
-        $('.datetimepicker_curr').datepicker("datetime", new Date());
-    });*/
->>>>>>> 803e4a8bdf141c544a71b840cc124dd5b6d24fa3
     $(function () {
         $('.date').datetimepicker({
             minDate:moment()

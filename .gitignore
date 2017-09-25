@@ -11,3 +11,5 @@ config/Migrations/schema-dump-default.lock
 /config/bootstrap.php
 webroot/challenge_images/*
 !webroot/challenge_images/empty
+webroot/media_file_upload_images/*
+!webroot/media_file_upload_images/empty
