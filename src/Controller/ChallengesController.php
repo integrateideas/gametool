@@ -21,8 +21,8 @@ use App\Shell\TriviaWinnerShell;
  */
 class ChallengesController extends AppController
 {
-   public function initialize()
-   {
+ public function initialize()
+ {
     parent::initialize();
     $this->Auth->allow(['userFbPosts']);
 }
@@ -36,7 +36,8 @@ class ChallengesController extends AppController
     {
 
         $this->paginate = [
-        'contain' => ['ChallengeTypes']
+        'contain' => ['ChallengeTypes'],
+        'conditions' => ['user_id' => $this->Auth->user('id')]
         ];
         $activeChallenge = null;
         $challenges = $this->paginate($this->Challenges);
@@ -76,6 +77,7 @@ class ChallengesController extends AppController
      */
     private function _checkActiveChallenge(){
         $getChallenges = $this->Challenges->find()->where(['is_active' => 1])->first();
+        // pr($getChallenges);die;
         
             if($getChallenges){
                 return true;
@@ -83,31 +85,44 @@ class ChallengesController extends AppController
                 return false;
             }
     }
+
     public function add()
     {
         $challenge = $this->Challenges->newEntity();
         
         if ($this->request->is('post')) {
+           
             $activeChallenge = $this->_checkActiveChallenge();
-            if($activeChallenge && $this->request->data['is_active'] == 0){
-
-                if($this->request->data['challenge_type_id'] == 3 || $this->request->data['challenge_type_id'] == 4){
-                    $this->request->data['details'] = null;
-                    $this->request->data['response'] = null;
-                }
-                // Converting end-time into UTC Timezone.
-                $dateTime = $this->request->data['end_time'];
-                $new_date = new Time($dateTime);
-                $this->request->data['end_time'] = $new_date;
-                $challenge = $this->Challenges->patchEntity($challenge, $this->request->getData());
+           
+            if((!$activeChallenge) || ($activeChallenge && $this->request->data['is_active'] == 0)){
                 
+
+            if($this->request->data['challenge_type_id'] == 3 || $this->request->data['challenge_type_id'] == 4){
+                $this->request->data['details'] = null;
+                $this->request->data['response'] = null;
+            }
+            $this->request->data['image_name']['name'] = str_replace(' ', '_', $this->request->data['image_name']['name']);
+            $this->request->data['user_id'] = $this->Auth->user('id');
+            
+            // Converting start-time into UTC Timezone.
+            $startTime = $this->request->data['start_time'];
+            $start_datetime = new Time($startTime);
+            $this->request->data['start_time'] = $start_datetime;
+
+            // Converting end-time into UTC Timezone.
+            $endTime = $this->request->data['end_time'];
+            $end_datetime = new Time($endTime);
+            $this->request->data['end_time'] = $end_datetime;
+            
+            $challenge = $this->Challenges->patchEntity($challenge, $this->request->getData());
+            
                 if ($this->Challenges->save($challenge)) {
                     $this->Flash->success(__('The challenge has been saved.'));
-
-                    return $this->redirect(['action' => 'index']);
+                    return $this->redirect(['action' => 'index']);   
                 }
-            $this->Flash->error(__('The challenge could not be saved. Please, try again.'));
+                $this->Flash->error(__('The challenge could not be saved. Please, try again.'));
             }else{
+  
                 $this->Flash->error(__('Challenge is already active.Please deactivate the challenge to activate this challenge.'));   
             }
         }
@@ -130,7 +145,6 @@ class ChallengesController extends AppController
             'contain' => []
             ]);
         
-        
         // if($activeDisable == $id){
         //     pr('here');die;
         // }else{
@@ -144,10 +158,21 @@ class ChallengesController extends AppController
         // $this->request->data['end_time'] = $new_date;
         // pr($this->request->data['end_time']);die;
         // die;
+
+        $startDate = new \DateTime($challenge->start_time);
+        $startDate = $startDate->format('m/d/Y H:i A');
+
+        $date = new \DateTime($challenge->end_time);
+        $date = $date->format('m/d/Y H:i A');
+
+        // pr($date);die;
         //If old image is available, unlink the path(and delete the image) and and  upload image from "upload" folder in webroot.
         $oldImageName = $challenge->image_name;
         $path = Configure::read('ImageUpload.uploadPathForChallengeImages');
         if ($this->request->is(['patch', 'post', 'put'])) {
+        if(isset($this->request->data['image_name'])){
+           $this->request->data['image_name']['name'] = str_replace(' ', '_', $this->request->data['image_name']['name']); 
+        }
 
             $challenge = $this->Challenges->patchEntity($challenge, $this->request->getData());
             if ($this->Challenges->save($challenge)) {
@@ -158,7 +183,8 @@ class ChallengesController extends AppController
             $this->Flash->error(__('The challenge could not be saved. Please, try again.'));
         }
         $challengeTypes = $this->Challenges->ChallengeTypes->find('list', ['limit' => 200]);
-        $this->set(compact('challenge', 'challengeTypes','date','endDateTimstamp'));
+
+        $this->set(compact('challenge', 'challengeTypes','date', 'startDate'));
         $this->set('_serialize', ['challenge']);
     }
 
@@ -183,6 +209,7 @@ class ChallengesController extends AppController
     }
 
     public function activeChallenge(){
+
         $this->viewBuilder()->layout('facebookuser');
         $chId  = (isset($this->request->query['chId']))?$this->request->query['chId']:null;
         $pageId  = (isset($this->request->query['p']))?$this->request->query['p']:null;
@@ -193,12 +220,12 @@ class ChallengesController extends AppController
 
         if(!$chId){
             $activeChallenge = $this->Challenges->find()
-                                                ->where(['is_active' => 1])
-                                                ->first();    
+            ->where(['is_active' => 1])
+            ->first();    
         }else{
 
             $activeChallenge = $this->Challenges->findById($chId)
-                                                ->first();
+            ->first();
 
             // if(!$activeChallenge->is_active){
             //     return $this->redirect(['action' => 'winner', '?'=>['chId' => $chId, 'p' => $pageId]]);
@@ -206,14 +233,15 @@ class ChallengesController extends AppController
             
         }
         if(!$activeChallenge->is_active){
-                return $this->redirect(['action' => 'winner', 'chId' => $chId, 'p' => $pageId]);
+            return $this->redirect(['action' => 'winner', 'chId' => $chId, 'p' => $pageId]);
         }else{
             $image_url = Router::url('/', true);
             $image_url = $image_url.$activeChallenge->image_path.'/'.$activeChallenge->image_name;
             $slug = strtolower(Text::slug($activeChallenge->name));
             $url = Router::url(['controller'=>$slug.'/challenge','?'=>['chId' => $chId, 'p' => $pageId]],true);
             $activeChallenge->url = $url;
-            $activeChallenge->image_url = $image_url;                                
+            $activeChallenge->image_url = $image_url;
+            
             $this->set(compact('activeChallenge'));
             $this->set(compact('pageId'));
             $this->set('_serialize', ['activeChallenge','pageId']);    
@@ -233,6 +261,7 @@ class ChallengesController extends AppController
         $this->viewBuilder()->setLayout('trivia_winner');
     }
 
+
    
     public function postWinner(){
         $tr = new TriviaWinnerShell();
@@ -241,6 +270,35 @@ class ChallengesController extends AppController
         $this->Flash->success(__('Post Winner Successfully on Facebook.'));
         $this->redirect(['action' => 'index']);
     }
+    // public function userFbPosts(){
+
+    //     $this->loadComponent('FbGraphApi'); 
+    //     $getFbPages = $this->FbGraphApi->getPages(true);
+    //     // pr($getFbPages['response']);die;
+    //     $data = [];
+
+    //     foreach ($getFbPages['response'] as $key => $value) {
+    //         $data[] = [ 
+    //                     'page_token'=> $value->access_token,
+    //                     'page_id' => $value->id,
+    //                     'page_name' => $value->name,
+    //                     'user_id' =>$this->Auth->User('id'),
+    //                     'status' => $getFbPages['status']
+    //                    ];
+    //     }
+
+    //     $this->loadModel('FbPracticeInformation');
+    //     $fbPageInfo = $this->FbPracticeInformation->newEntities($data);
+    //     $fbPageInfo = $this->FbPracticeInformation->patchEntities($fbPageInfo, $data);
+    //     if ($this->FbPracticeInformation->saveMany($fbPageInfo)) {
+    //             pr($this->FbPracticeInformation->saveMany($fbPageInfo));die;
+    //         }else{
+    //             pr('There is an error while saving data.');
+    //         }
+
+    //     $response = $this->FbGraphApi->postOnFb($data['fb_page_identifier'],$data['message'],$pageToken[$data['fb_page_identifier']]);
+
+    // }
 
     public function isAuthorized($user)
     {
@@ -261,20 +319,46 @@ class ChallengesController extends AppController
         $fbPracticeInfoId = $this->FbPracticeInformation->findByPageId($pageId)->first()->get('id');
 
         $challengeWinner = $this->ChallengeWinners->findByChallengeId($challengeId)
-                                                ->contain(['Challenges'])
-                                                ->where([
-                                                    'fb_practice_information_id' => $fbPracticeInfoId
-                                                    ])
-                                                ->first();
+        ->contain(['Challenges'])
+        ->where([
+            'fb_practice_information_id' => $fbPracticeInfoId
+            ])
+        ->first();
         if(!$challengeWinner){
             die(' no one played the game');
         }                                                                                 
         $activeChallenge = $challengeWinner->challenge;
 
-        $image_url = Router::url('/', true);
-        $image_url = $image_url.$activeChallenge->image_path.'/'.$activeChallenge->image_name;
-        $activeChallenge->image_url = $image_url;                                
+        $this->_createImage($challengeWinner);                                
         $this->set(compact('activeChallenge', 'challengeWinner'));
         $this->set('_serialize', ['challenge', 'challengeWinner']);
+    }
+
+    private function _createImage($challengeDetails){
+        if($challengeDetails){
+            $activeChallenge = $challengeDetails->challenge;
+           try {
+              // Create a new SimpleImage object
+                  $image = new \claviska\SimpleImage();
+                  $image
+                ->fromFile(WWW_ROOT.'challenge_images/'.$activeChallenge->image_name)                     // load image.jpg
+                ->autoOrient()  // adjust orientation based on exif data
+                ->resize(1000, 600)                            
+                ->text('Winner of '.$activeChallenge->name.' is ',['color'=> $activeChallenge->image_details['text-color'], 
+                'anchor'=> $activeChallenge->image_details['text-position'],
+                'size'=> $activeChallenge->image_details['text-font-size'],
+                'yOffset'=>-80,
+                'fontFile'=>WWW_ROOT.'fonts/Futura-Std-Book.ttf'])
+                ->text(ucfirst($challengeDetails->identifier_value),['color'=> $activeChallenge->image_details['text-color'], 
+                'anchor'=> $activeChallenge->image_details['text-position'],
+                'yOffset'=>80,
+                'shadow'=>['x'=>2,'y'=>10,'color'=>$activeChallenge->image_details['text-shadow-color']],
+                'size'=> $activeChallenge->image_details['text-font-size']*2,
+                'fontFile'=>WWW_ROOT.'fonts/Futura-Std-Book.ttf'])  
+                ->toScreen();                               
+            } catch(Exception $err) {
+              echo $err->getMessage();
+            }
+        }
     }
 }

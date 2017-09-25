@@ -44,10 +44,12 @@ class ChallengesTable extends Table
         $this->setDisplayField('name');
         $this->setPrimaryKey('id');
         $this->addBehavior('Timestamp');
+
         $this->belongsTo('Users', [
             'foreignKey' => 'user_id',
             'joinType' => 'INNER'
         ]);
+
         $this->belongsTo('ChallengeTypes', [
             'foreignKey' => 'challenge_type_id',
             'joinType' => 'INNER'
@@ -117,6 +119,7 @@ class ChallengesTable extends Table
     {
         $rules->add($rules->existsIn(['challenge_type_id'], 'ChallengeTypes'));
         $rules->add($rules->existsIn(['user_id'], 'Users'));
+
         return $rules;
     }
 }

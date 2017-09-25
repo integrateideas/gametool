@@ -13,7 +13,8 @@
         "facebook/graph-sdk": "^5.5",
         "josegonzalez/dotenv": "2.*",
         "josegonzalez/cakephp-upload": "^3.6",
-        "integrateideas/inspiniaTheme" : "dev-InspiniaTheme"
+        "integrateideas/inspiniaTheme" : "dev-InspiniaTheme",
+        "claviska/simpleimage": "^3.3"
     },
     "repositories": [
        {
