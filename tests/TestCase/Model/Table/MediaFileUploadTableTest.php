@@ -1,22 +1,22 @@
 <?php
 namespace App\Test\TestCase\Model\Table;
 
-use App\Model\Table\ChallengesTable;
+use App\Model\Table\MediaFileUploadTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
- * App\Model\Table\ChallengesTable Test Case
+ * App\Model\Table\MediaFileUploadTable Test Case
  */
-class ChallengesTableTest extends TestCase
+class MediaFileUploadTableTest extends TestCase
 {
 
     /**
      * Test subject
      *
-     * @var \App\Model\Table\ChallengesTable
+     * @var \App\Model\Table\MediaFileUploadTable
      */
-    public $Challenges;
+    public $MediaFileUpload;
 
     /**
      * Fixtures
@@ -24,15 +24,7 @@ class ChallengesTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'app.challenges',
-        'app.challenge_types',
-        'app.user_challenge_responses',
-        'app.fb_practice_information',
-        'app.users',
-        'app.roles',
-        'app.challenge_winners',
-        'app.user_social_connections',
-        'app.social_connections'
+        'app.media_file_upload'
     ];
 
     /**
@@ -43,8 +35,8 @@ class ChallengesTableTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $config = TableRegistry::exists('Challenges') ? [] : ['className' => ChallengesTable::class];
-        $this->Challenges = TableRegistry::get('Challenges', $config);
+        $config = TableRegistry::exists('MediaFileUpload') ? [] : ['className' => MediaFileUploadTable::class];
+        $this->MediaFileUpload = TableRegistry::get('MediaFileUpload', $config);
     }
 
     /**
@@ -54,7 +46,7 @@ class ChallengesTableTest extends TestCase
      */
     public function tearDown()
     {
-        unset($this->Challenges);
+        unset($this->MediaFileUpload);
 
         parent::tearDown();
     }
@@ -75,16 +67,6 @@ class ChallengesTableTest extends TestCase
      * @return void
      */
     public function testValidationDefault()
-    {
-        $this->markTestIncomplete('Not implemented yet.');
-    }
-
-    /**
-     * Test buildRules method
-     *
-     * @return void
-     */
-    public function testBuildRules()
     {
         $this->markTestIncomplete('Not implemented yet.');
     }

@@ -25,6 +25,10 @@ class ChallengesFixture extends TestFixture
         'is_active' => ['type' => 'boolean', 'length' => null, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null],
         'created' => ['type' => 'datetime', 'length' => null, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null],
         'modified' => ['type' => 'datetime', 'length' => null, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null],
+        'image_path' => ['type' => 'string', 'length' => 255, 'null' => true, 'default' => null, 'collate' => 'latin1_swedish_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
+        'image_name' => ['type' => 'string', 'length' => 255, 'null' => true, 'default' => null, 'collate' => 'latin1_swedish_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
+        'instruction' => ['type' => 'string', 'length' => 255, 'null' => true, 'default' => null, 'collate' => 'latin1_swedish_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
+        'end_time' => ['type' => 'datetime', 'length' => null, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null],
         '_constraints' => [
             'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
         ],
@@ -48,8 +52,12 @@ class ChallengesFixture extends TestFixture
             'details' => 'Lorem ipsum dolor sit amet, aliquet feugiat. Convallis morbi fringilla gravida, phasellus feugiat dapibus velit nunc, pulvinar eget sollicitudin venenatis cum nullam, vivamus ut a sed, mollitia lectus. Nulla vestibulum massa neque ut et, id hendrerit sit, feugiat in taciti enim proin nibh, tempor dignissim, rhoncus duis vestibulum nunc mattis convallis.',
             'response' => 'Lorem ipsum dolor sit amet',
             'is_active' => 1,
-            'created' => '2017-08-29 12:24:03',
-            'modified' => '2017-08-29 12:24:03'
+            'created' => '2017-09-22 09:01:47',
+            'modified' => '2017-09-22 09:01:47',
+            'image_path' => 'Lorem ipsum dolor sit amet',
+            'image_name' => 'Lorem ipsum dolor sit amet',
+            'instruction' => 'Lorem ipsum dolor sit amet',
+            'end_time' => '2017-09-22 09:01:47'
         ],
     ];
 }

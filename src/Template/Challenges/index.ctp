@@ -9,6 +9,11 @@
         <div class="ibox float-e-margins">
         <div class = 'ibox-title'>
             <h3><?= __('Challenges') ?></h3>
+            <?php if($activeChallenge == 1){?>
+            <p align="right">
+            <?= $this->Html->link(__('Post Winner on Facebook'), ['action' => 'postWinner'],['class' => 'btn btn-info']) ?>
+            </p>
+            <?php }?>
         </div>
         <div class = "ibox-content">
                     <table class = 'table' cellpadding="0" cellspacing="0">

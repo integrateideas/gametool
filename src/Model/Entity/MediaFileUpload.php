@@ -1,24 +1,22 @@
 <?php
 namespace App\Model\Entity;
+
 use Cake\ORM\Entity;
 use Cake\Routing\Router;
 /**
- * Challenge Entity
+ * MediaFileUpload Entity
  *
  * @property int $id
- * @property int $challenge_type_id
- * @property string $name
- * @property string $details
- * @property string $response
- * @property bool $is_active
+ * @property string $description
+ * @property string $image_path
+ * @property $image_name
+ * @property bool $is_deleted
  * @property \Cake\I18n\FrozenTime $created
  * @property \Cake\I18n\FrozenTime $modified
- *
- * @property \App\Model\Entity\ChallengeType $challenge_type
- * @property \App\Model\Entity\UserChallengeResponse[] $user_challenge_responses
  */
-class Challenge extends Entity
+class MediaFileUpload extends Entity
 {
+
     /**
      * Fields that can be mass assigned using newEntity() or patchEntity().
      *
@@ -32,14 +30,15 @@ class Challenge extends Entity
         '*' => true,
         'id' => false
     ];
-      protected function _getImageUrl()
+     protected function _getImageUrl()
     {
-        // pr('www'); die();
         if(isset($this->_properties['image_name']) && !empty($this->_properties['image_name'])) {
-            $url = Router::url('/challenge_images/'.$this->_properties['image_name'],true);
+            $url = Router::url('/media_file_upload_images/'.$this->_properties['image_name'],true);
         }else{
             $url = Router::url('/img/default-img.jpeg',true);
         }
+        // pr($url); die();
         return $url;
+
     }
 }
