@@ -25,7 +25,7 @@
                             ?>
                             <div id = "share-wisdom" style = "display: none;">
                                 <?php
-                                    echo $this->Form->control('details.topic', ['required' => true]);
+                                    echo $this->Form->control('details.topic');
                                 ?>
                             </div>
                             <div class="form-group">
@@ -94,7 +94,7 @@
                                                     'Multiple Choice' => 'Multiple Choice',
                                                     'One-Word' => 'One-Word'
                                                  ];
-                                echo $this->Form->control('details.question_type', ['options' => $question_type, 'empty' => '---Please Select---', 'required' => true]);
+                                echo $this->Form->control('details.question_type', ['options' => $question_type, 'empty' => '---Please Select---']);
                                 ?>
                                 <div class="form-group text">
                                     <label class="col-sm-2 control-label" for="details-statement">
@@ -102,7 +102,7 @@
                                     </label>
                                     <div class="col-sm-7">
                                         <div class="form-group text">
-                                            <input type="text" class="form-control" name="details[statement]" id="details-statement", required="true">
+                                            <input type="text" class="form-control" name="details[statement]" id="details-statement">
                                         </div>
                                     </div>
                                     <div class="col-sm-2" id = "multiple" style="display: none">
@@ -123,7 +123,7 @@
 
                             <div id = 'fill-in-blanks' style="display: none;">         
                             <?php
-                                echo $this->Form->control('details.link', ['required' => true]);
+                                echo $this->Form->control('details.link', []);
                                 echo $this->Form->control('response');
                             ?>
                             </div>
