@@ -10,6 +10,8 @@ use Cake\I18n\Time;
 use Cake\Network\Exception\NotFoundException;
 use Cake\I18n\Date;
 use Cake\Utility\Text;
+use App\Shell\TriviaWinnerShell;
+
 /**
  * Challenges Controller
  *
@@ -37,9 +39,15 @@ class ChallengesController extends AppController
         'contain' => ['ChallengeTypes'],
         'conditions' => ['user_id' => $this->Auth->user('id')]
         ];
+        $activeChallenge = null;
         $challenges = $this->paginate($this->Challenges);
+        foreach ($challenges as $key => $value) {
+            if($value->is_active == 1){
+                $activeChallenge = 1;
+            }
+        }
 
-        $this->set(compact('challenges'));
+        $this->set(compact('challenges','activeChallenge'));
         $this->set('_serialize', ['challenges']);
     }
 
@@ -67,28 +75,56 @@ class ChallengesController extends AppController
      *
      * @return \Cake\Http\Response|null Redirects on successful add, renders view otherwise.
      */
+    private function _checkActiveChallenge(){
+        $getChallenges = $this->Challenges->find()->where(['is_active' => 1])->first();
+        // pr($getChallenges);die;
+        
+            if($getChallenges){
+                return true;
+            }else{
+                return false;
+            }
+    }
+
     public function add()
     {
         $challenge = $this->Challenges->newEntity();
+        
         if ($this->request->is('post')) {
+           
+            $activeChallenge = $this->_checkActiveChallenge();
+           
+            if((!$activeChallenge) || ($activeChallenge && $this->request->data['is_active'] == 0)){
+                
+
             if($this->request->data['challenge_type_id'] == 3 || $this->request->data['challenge_type_id'] == 4){
                 $this->request->data['details'] = null;
                 $this->request->data['response'] = null;
             }
             $this->request->data['image_name']['name'] = str_replace(' ', '_', $this->request->data['image_name']['name']);
             $this->request->data['user_id'] = $this->Auth->user('id');
-            // Converting end-time into UTC Timezone.
-            $dateTime = $this->request->data['end_time'];
-            $new_date = new Time($dateTime);
-            $this->request->data['end_time'] = $new_date;
-            $challenge = $this->Challenges->patchEntity($challenge, $this->request->getData());
-            // pr($challenge); die;
-            if ($this->Challenges->save($challenge)) {
-                $this->Flash->success(__('The challenge has been saved.'));
+            
+            // Converting start-time into UTC Timezone.
+            $startTime = $this->request->data['start_time'];
+            $start_datetime = new Time($startTime);
+            $this->request->data['start_time'] = $start_datetime;
 
-                return $this->redirect(['action' => 'index']);
+            // Converting end-time into UTC Timezone.
+            $endTime = $this->request->data['end_time'];
+            $end_datetime = new Time($endTime);
+            $this->request->data['end_time'] = $end_datetime;
+            
+            $challenge = $this->Challenges->patchEntity($challenge, $this->request->getData());
+            
+                if ($this->Challenges->save($challenge)) {
+                    $this->Flash->success(__('The challenge has been saved.'));
+                    return $this->redirect(['action' => 'index']);   
+                }
+                $this->Flash->error(__('The challenge could not be saved. Please, try again.'));
+            }else{
+  
+                $this->Flash->error(__('Challenge is already active.Please deactivate the challenge to activate this challenge.'));   
             }
-            $this->Flash->error(__('The challenge could not be saved. Please, try again.'));
         }
         $challengeTypes = $this->Challenges->ChallengeTypes->find('list', ['limit' => 200]);
         $this->set(compact('challenge', 'challengeTypes'));
@@ -102,11 +138,27 @@ class ChallengesController extends AppController
      * @return \Cake\Http\Response|null Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Network\Exception\NotFoundException When record not found.
      */
+
     public function edit($id = null)
     {
         $challenge = $this->Challenges->get($id, [
             'contain' => []
             ]);
+        
+        // if($activeDisable == $id){
+        //     pr('here');die;
+        // }else{
+        //     pr('there');die;
+        // }
+        // pr($challenge->end_time);die;
+        // $date = new \DateTime($challenge->end_time);
+        // $date = $date->format('m/d/Y H:i A');
+        $endDateTimstamp = strtotime($challenge->end_time);
+        // $endDateTimstamp = $endDateTimstamp;
+        // $this->request->data['end_time'] = $new_date;
+        // pr($this->request->data['end_time']);die;
+        // die;
+
         $startDate = new \DateTime($challenge->start_time);
         $startDate = $startDate->format('m/d/Y H:i A');
 
@@ -118,9 +170,10 @@ class ChallengesController extends AppController
         $oldImageName = $challenge->image_name;
         $path = Configure::read('ImageUpload.uploadPathForChallengeImages');
         if ($this->request->is(['patch', 'post', 'put'])) {
-            if(isset($this->request->data['image_name'])){
-               $this->request->data['image_name']['name'] = str_replace(' ', '_', $this->request->data['image_name']['name']); 
-            }
+        if(isset($this->request->data['image_name'])){
+           $this->request->data['image_name']['name'] = str_replace(' ', '_', $this->request->data['image_name']['name']); 
+        }
+
             $challenge = $this->Challenges->patchEntity($challenge, $this->request->getData());
             if ($this->Challenges->save($challenge)) {
                 $this->Flash->success(__('The challenge has been saved.'));
@@ -130,6 +183,7 @@ class ChallengesController extends AppController
             $this->Flash->error(__('The challenge could not be saved. Please, try again.'));
         }
         $challengeTypes = $this->Challenges->ChallengeTypes->find('list', ['limit' => 200]);
+
         $this->set(compact('challenge', 'challengeTypes','date', 'startDate'));
         $this->set('_serialize', ['challenge']);
     }
@@ -207,6 +261,15 @@ class ChallengesController extends AppController
         $this->viewBuilder()->setLayout('trivia_winner');
     }
 
+
+   
+    public function postWinner(){
+        $tr = new TriviaWinnerShell();
+        $tr->endChallenge();
+        $this->Flash->success(__('Challenge end Successfully.'));
+        $this->Flash->success(__('Post Winner Successfully on Facebook.'));
+        $this->redirect(['action' => 'index']);
+    }
     // public function userFbPosts(){
 
     //     $this->loadComponent('FbGraphApi'); 
@@ -247,6 +310,7 @@ class ChallengesController extends AppController
         $this->viewBuilder()->layout('facebookuser');
         $challengeId = (isset($this->request->query['chId']))?$this->request->query['chId']:null;
         $pageId = (isset($this->request->query['p']))?$this->request->query['p']:null;
+        // pr($pageId);die;
         $this->loadModel('FbPracticeInformation');
         $this->loadModel('ChallengeWinners');
         if(!$challengeId || !$pageId){

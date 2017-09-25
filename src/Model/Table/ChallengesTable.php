@@ -1,6 +1,5 @@
 <?php
 namespace App\Model\Table;
-
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -26,14 +25,12 @@ use App\Model\Entity\Challenge;
  */
 class ChallengesTable extends Table
 {
-
    protected function _initializeSchema(TableSchema $schema){
         
         $schema->columnType('details', 'json');
         $schema->columnType('image_details', 'json');
         return $schema;
     }
-
     /**
      * Initialize method
      *
@@ -43,11 +40,9 @@ class ChallengesTable extends Table
     public function initialize(array $config)
     {
         parent::initialize($config);
-
         $this->setTable('challenges');
         $this->setDisplayField('name');
         $this->setPrimaryKey('id');
-
         $this->addBehavior('Timestamp');
 
         $this->belongsTo('Users', [
@@ -67,9 +62,7 @@ class ChallengesTable extends Table
         ]);
          $this->addBehavior('Josegonzalez/Upload.Upload', [
           'image_name' => [
-
             'path' => Configure::read('ImageUpload.uploadPathForChallengeImages'),
-
             'fields' => [
               'dir' => 'image_path'
             ],
@@ -79,7 +72,6 @@ class ChallengesTable extends Table
           ],
         ]);
     }
-
     /**
      * Default validation rules.
      *
@@ -91,7 +83,6 @@ class ChallengesTable extends Table
         $validator
             ->integer('id')
             ->allowEmpty('id', 'create');
-
         $validator
             ->scalar('name')
             ->requirePresence('name', 'create')
@@ -100,28 +91,23 @@ class ChallengesTable extends Table
             ->scalar('instruction')
             ->requirePresence('instruction', 'create')
             ->notEmpty('instruction');
-
         // $validator
         //     ->scalar('details')
         //     ->allowEmpty('details');
         $validator
             ->allowEmpty('image_path');
-
         $validator
             ->allowEmpty('image_name');
         
         $validator
             ->scalar('response')
             ->allowEmpty('response');
-
         $validator
             ->boolean('is_active')
             ->requirePresence('is_active', 'create')
             ->notEmpty('is_active');
-
         return $validator;
     }
-
     /**
      * Returns a rules checker object that will be used for validating
      * application integrity.

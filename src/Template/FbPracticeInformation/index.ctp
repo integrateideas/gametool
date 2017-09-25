@@ -19,21 +19,21 @@
                                         <th scope="col"><?= $this->Paginator->sort('fb_page_id') ?></th>
                                         <th scope="col"><?= $this->Paginator->sort('buzzydoc_vendor_id') ?></th>
                                         <th scope="col"><?= $this->Paginator->sort('status') ?></th>
-                                        <th scope="col"><?= $this->Paginator->sort('created') ?></th>
-                                        <th scope="col"><?= $this->Paginator->sort('modified') ?></th>
                                         <th scope="col" class="actions"><?= __('Actions') ?></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($fbPracticeInformation as $fbPracticeInformation): ?>
+                        <?php foreach ($fbPracticeInformation as $fbPracticeInformation):
+                            if($fbPracticeInformation->challenge_winners){
+                               $chId = $fbPracticeInformation->challenge_winners[0]->challenge_id;
+                            }
+                        ?>
                         <tr>
                                         <td><?= $this->Number->format($fbPracticeInformation->id) ?></td>
                                         <td><?= (($fbPracticeInformation->practice_name))? h($fbPracticeInformation->practice_name): 'not-provided' ?></td>
                                         <td><?= h($fbPracticeInformation->page_name) ?></td>
                                         <td><?= ($fbPracticeInformation->buzzydoc_vendor_id) ? h($fbPracticeInformation->buzzydoc_vendor_id): 'not-provided' ?></td>
                                         <td><?= h($fbPracticeInformation->status) ?></td>
-                                        <td><?= h($fbPracticeInformation->created) ?></td>
-                                        <td><?= h($fbPracticeInformation->modified) ?></td>
                             <td class="actions">
                                             <?= '<a href='.$this->Url->build(['action' => 'view', $fbPracticeInformation->id]).' class="btn btn-xs btn-success">' ?>
                                                 <i class="fa fa-eye fa-fw"></i>
