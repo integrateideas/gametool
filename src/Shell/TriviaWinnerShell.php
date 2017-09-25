@@ -20,6 +20,7 @@ use Cake\Log\Log;
 use Cake\Collection\Collection;
 use Cake\Core\Configure;
 use Cake\Routing\Router;
+use Cake\Http\Client;
 
 
 
@@ -55,6 +56,7 @@ class TriviaWinnerShell extends Shell
     }
     
     private  function _triviaWinner($activeChallengeId){
+      // pr('m here'); die;
         // $this->FbGraphApi =  new FbGraphApiComponent(new ComponentRegistry(), []);
         // $this->loadComponent('FbGraphApi'); 
       $this->loadModel('UserChallengeResponses');
@@ -159,12 +161,34 @@ class TriviaWinnerShell extends Shell
                 'url'=>$fileUrl
                 ];
                 
+                $triviaWinnerPoints = $this->_rewardPoints($winner);
+                pr($triviaWinnerPoints); die;
                 $response =  $this->_fb->post($url,$data, $winner->fb_practice_information->page_token);
-                pr($response);
               } catch(Exception $err) {
                 pr($err->getMessage());
               }
             }
+          }
+
+          private function _rewardPoints($challengeWinner){
+
+            $this->loadModel('FbPracticeInformation');
+            $vendorId = $this->FbPracticeInformation->findById($challengeWinner->fb_practice_information_id)
+                                                  ->first()
+                                                  ->get('buzzydoc_vendor_id');
+                                                  
+            $data = [
+                        "vendor_id" => $vendorId,
+                        "identifier_type" => $challengeWinner->identifier_type,
+                        "identifier_value" => $challengeWinner->identifier_value
+                    ];
+
+          
+            $http = new Client();
+            $response = $http->post(Configure::read('buzzydocApp.baseUrl'), json_encode($data));
+            $response = json_decode($response->body());
+            return $response;
+
           }
 
           public function endChallenge(){
@@ -182,7 +206,6 @@ class TriviaWinnerShell extends Shell
           $activeChallengeEndTime = $activeChallenge['end_time'];
           $activeChallengeEndTime = strtotime($activeChallengeEndTime);
           if($currentTime >= $activeChallengeEndTime){
-
             $data = [
             'id' => $activeChallenge['id'],
             'is_active' => 0
