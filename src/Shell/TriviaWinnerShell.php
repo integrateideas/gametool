@@ -172,6 +172,7 @@ class TriviaWinnerShell extends Shell
            $activeChallenge = $this->Challenges->find()
                                                ->where(['is_active'=> 1])
                                                ->first();
+
            if(!$activeChallenge){
             return false;
           }

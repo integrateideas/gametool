@@ -27,6 +27,9 @@ class FbPracticeInformationController extends AppController
             'conditions' => ['user_id' => $this->Auth->user('id')]
         ];
 
+
+        $fbPracticeInformation = $this->paginate($this->FbPracticeInformation);
+
         $fbPracticeInformation = $this->paginate($this->FbPracticeInformation);
         
         $this->set(compact('fbPracticeInformation'));

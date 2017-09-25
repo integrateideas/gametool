@@ -83,7 +83,6 @@
                                     <div class="form-group">
                                         <div class='input-group date datetimepicker_curr' id='datetimepicker'>
                                             <input type='text' class="form-control"  name="end_time" >
-
                                             <span class="input-group-addon">
                                                 <span class="glyphicon glyphicon-calendar" ></span>
                                             </span>
@@ -155,6 +154,7 @@
 <!-- <script type="text/javascript">
 var datetime = '<?= $endDateTimstamp?>';
 console.log(datetime);
+<<<<<<< HEAD
 console.log((new Date(datetime)).format('Y-m-d h:i:s'));
     $(document).ready(function(){
         $('#datetimepicker').datetimepicker({
@@ -167,6 +167,11 @@ console.log((new Date(datetime)).format('Y-m-d h:i:s'));
     
 </script> -->
 <script type="text/javascript">
+=======
+    /*$(document).ready(function(){
+        $('.datetimepicker_curr').datepicker("datetime", new Date());
+    });*/
+>>>>>>> 803e4a8bdf141c544a71b840cc124dd5b6d24fa3
     $(function () {
         $('.date').datetimepicker({
             minDate:moment()
