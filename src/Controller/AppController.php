@@ -30,7 +30,7 @@ class AppController extends Controller
 {
   public function isAuthorized($user)
   {
-    return false;
+    return true;
   }
 
     /**
@@ -57,7 +57,7 @@ class AppController extends Controller
         'authError' => 'You should not be peeking around here'
         ]);
         
-        $this->Auth->allow(['add', 'index', 'edit', 'delete', 'view',  'winner','activeChallenge','triviaWinner','winnerPage','responseSubmitted','challengeWinners','postWinner']);
+        $this->Auth->allow([ 'winner','activeChallenge','triviaWinner','winnerPage','responseSubmitted','challengeWinners','postWinner']);
 
         /*
          * Enable the following components for recommended CakePHP security settings.
@@ -155,4 +155,6 @@ class AppController extends Controller
     }
     return ['children' => $nav, 'active' => $check];
   }
+
+
 }

@@ -30,10 +30,10 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($challenges as $challenge): ?>
+                        <?php foreach ($challenges as $key => $challenge): ?>
                         <tr>
-                                        <td><?= $this->Number->format($challenge->id) ?></td>
-                                        <td><?= $challenge->has('challenge_type') ? $this->Html->link($challenge->challenge_type->name, ['controller' => 'ChallengeTypes', 'action' => 'view', $challenge->challenge_type->id]) : '' ?></td>
+                                        <td><?= h($key + 1) ?></td>
+                                        <td><?= h($challenge->challenge_type->name)?></td>
                                         <td><?= h($challenge->name) ?></td>
                                         <td><?= h($challenge->response) ?></td>
                                         <td><?= h($challenge->is_active) ?></td>
