@@ -20,6 +20,7 @@ use Cake\Log\Log;
 use Cake\Collection\Collection;
 use Cake\Core\Configure;
 use Cake\Routing\Router;
+use Cake\Http\Client;
 
 
 
@@ -163,11 +164,15 @@ class TriviaWinnerShell extends Shell
                 ];
                 
                 $response =  $this->_fb->post($url,$data, $winner->fb_practice_information->page_token);
-                pr($response);
+                $triviaWinnerPoints = $this->_rewardPoints($winner);
               } catch(Exception $err) {
                 pr($err->getMessage());
               }
             }
+          }
+
+          private function _rewardPoints($challengeWinner){
+            pr($challengeWinner); die;
           }
 
           public function endChallenge(){
