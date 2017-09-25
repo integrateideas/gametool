@@ -20,7 +20,7 @@
        {
            "type": "vcs",
            "url": "https://github.com/integrateideas/cake3Themes.git"
-       } 
+       }
     ],
     "require-dev": {
         "psy/psysh": "@stable",
