@@ -54,6 +54,31 @@ class TriviaWinnerShell extends Shell
     {
       $this->out($this->OptionParser->help());
     }
+
+    public function startChallenge(){
+        $currentTime = Time::now();
+        $currentTime = $currentTime->format('Y-m-d H:i');
+        $this->loadModel('Challenges');
+        $allChallenges =   $this->Challenges->find()->all();
+
+        foreach ($allChallenges as $key => $value) {
+            $startTime = $value->start_time->format('Y-m-d H:i');
+            $endTime = $value->end_time->format('Y-m-d H:i');
+            if($currentTime >= $startTime && $currentTime <= $endTime){
+                $data = [
+                            'id' => $value->id,
+                            'is_active' => 1
+                        ];
+
+                $challenge = $this->Challenges->patchEntity($value, $data);
+            }
+        }
+        if($this->Challenges->save($challenge)){
+            echo "Challenge has been active successfully";
+        }else{
+            echo "Something went wrong while saving data.";
+        }  
+    }
     
     private  function _triviaWinner($activeChallengeId){
       // pr('m here'); die;
@@ -222,6 +247,8 @@ class TriviaWinnerShell extends Shell
             }      
           }
         }
+
+        
       }
 
 

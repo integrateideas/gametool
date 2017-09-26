@@ -51,6 +51,8 @@ class ChallengesController extends AppController
         $this->set('_serialize', ['challenges']);
     }
 
+    
+
     /**
      * View method
      *
@@ -103,17 +105,21 @@ class ChallengesController extends AppController
             }
             $this->request->data['image_name']['name'] = str_replace(' ', '_', $this->request->data['image_name']['name']);
             $this->request->data['user_id'] = $this->Auth->user('id');
-            
+            //provided timezone
+            $tz_from = $this->request->data['timezone'];
+            $tz_to = 'UTC';
             // Converting start-time into UTC Timezone.
             $startTime = $this->request->data['start_time'];
-            $start_datetime = new Time($startTime);
-            $this->request->data['start_time'] = $start_datetime;
+            $start = new \DateTime($startTime, new \DateTimeZone($tz_from));
+            $start = $start->setTimeZone(new \DateTimeZone($tz_to));
+            $this->request->data['start_time'] = $start;
 
             // Converting end-time into UTC Timezone.
             $endTime = $this->request->data['end_time'];
-            $end_datetime = new Time($endTime);
-            $this->request->data['end_time'] = $end_datetime;
-            
+            $end = new \DateTime($endTime, new \DateTimeZone($tz_from));
+            $end = $end->setTimeZone(new \DateTimeZone($tz_to));
+            $this->request->data['end_time'] = $end;
+
             $challenge = $this->Challenges->patchEntity($challenge, $this->request->getData());
             
                 if ($this->Challenges->save($challenge)) {
@@ -128,6 +134,7 @@ class ChallengesController extends AppController
         }
         $challengeTypes = $this->Challenges->ChallengeTypes->find('list', ['limit' => 200]);
         $this->set(compact('challenge', 'challengeTypes'));
+        $this->set('timeZoneList',array_flip($this->_getTimeZoneList()));
         $this->set('_serialize', ['challenge']);
     }
 
@@ -144,28 +151,8 @@ class ChallengesController extends AppController
         $challenge = $this->Challenges->get($id, [
             'contain' => []
             ]);
-        
-        // if($activeDisable == $id){
-        //     pr('here');die;
-        // }else{
-        //     pr('there');die;
-        // }
-        // pr($challenge->end_time);die;
-        // $date = new \DateTime($challenge->end_time);
-        // $date = $date->format('m/d/Y H:i A');
-        $endDateTimstamp = strtotime($challenge->end_time);
-        // $endDateTimstamp = $endDateTimstamp;
-        // $this->request->data['end_time'] = $new_date;
-        // pr($this->request->data['end_time']);die;
-        // die;
-
-        $startDate = new \DateTime($challenge->start_time);
-        $startDate = $startDate->format('m/d/Y H:i A');
-
-        $date = new \DateTime($challenge->end_time);
-        $date = $date->format('m/d/Y H:i A');
-
-        // pr($date);die;
+        // pr($challenge->timezone);die;
+        $timezone = $challenge->timezone;
         //If old image is available, unlink the path(and delete the image) and and  upload image from "upload" folder in webroot.
         $oldImageName = $challenge->image_name;
         $path = Configure::read('ImageUpload.uploadPathForChallengeImages');
@@ -184,7 +171,8 @@ class ChallengesController extends AppController
         }
         $challengeTypes = $this->Challenges->ChallengeTypes->find('list', ['limit' => 200]);
 
-        $this->set(compact('challenge', 'challengeTypes','date', 'startDate'));
+        $this->set(compact('challenge', 'challengeTypes','date', 'startDate','timezone'));
+        $this->set('timeZoneList',array_flip($this->_getTimeZoneList()));
         $this->set('_serialize', ['challenge']);
     }
 
@@ -267,6 +255,7 @@ class ChallengesController extends AppController
 
    
     public function postWinner(){
+
         $tr = new TriviaWinnerShell();
         $tr->endChallenge();
         $this->Flash->success(__('Challenge end Successfully.'));
