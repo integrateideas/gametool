@@ -53,7 +53,8 @@
                                     <div class="form-group text required m-t-md">
                                         <h3 class="col-sm-2 col-sm-offset-2">Your Response</h3>
                                         <div class="col-sm-6"><input type="text" id="name" maxlength="255" required="required" name="response" class="form-control">
-                                        </div>
+                                        </div><br><br>
+                                        <div class = "text-center" id="validInput" style="display: none;">Please fill this input field</div>
                                     </div> 
                                     <?php } }?>
                                     <div class="form-group">
@@ -81,6 +82,7 @@
                             var challengeId = $('#challenge_id').val();
                             var value = $('#name').val();
                             if(value.length <=0 ){
+                                $('#validInput').show();
                                 return false;
                             }
 
