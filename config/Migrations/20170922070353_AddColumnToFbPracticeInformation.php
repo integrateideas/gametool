@@ -15,7 +15,7 @@ class AddColumnToFbPracticeInformation extends AbstractMigration
         $table = $this->table('fb_practice_information');
         $table->addColumn('is_old_buzzydoc', 'boolean', [
             'default' => null,
-            'null' => false,
+            'null' => true,
         ]);
         $table->update();
     }
