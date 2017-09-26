@@ -232,6 +232,7 @@ class ChallengesController extends AppController
             // }  
             
         }
+        $challengeEndTime = $activeChallenge->end_time->setTimezone($activeChallenge->timezone)->format('Y-m-d h:i:s');
         if(!$activeChallenge->is_active){
             return $this->redirect(['action' => 'winner', 'chId' => $chId, 'p' => $pageId]);
         }else{
@@ -240,10 +241,12 @@ class ChallengesController extends AppController
             $slug = strtolower(Text::slug($activeChallenge->name));
             $url = Router::url(['controller'=>$slug.'/challenge','?'=>['chId' => $chId, 'p' => $pageId]],true);
             $activeChallenge->url = $url;
+            $activeChallenge->encodeUrl = urlencode($activeChallenge->url);
             $activeChallenge->image_url = $image_url;
             
             $this->set(compact('activeChallenge'));
-            $this->set(compact('pageId'));
+            $this->set(compact('pageId','challengeEndTime'));
+
             $this->set('_serialize', ['activeChallenge','pageId']);    
         }
         
@@ -352,8 +355,8 @@ class ChallengesController extends AppController
                 ->text(ucfirst($challengeDetails->identifier_value),['color'=> $activeChallenge->image_details['text-color'], 
                 'anchor'=> $activeChallenge->image_details['text-position'],
                 'yOffset'=>80,
-                'shadow'=>['x'=>2,'y'=>10,'color'=>$activeChallenge->image_details['text-shadow-color']],
-                'size'=> $activeChallenge->image_details['text-font-size']*2,
+                'shadow'=>['x'=>2,'y'=>4,'color'=>$activeChallenge->image_details['text-shadow-color']],
+                  'size'=> $activeChallenge->image_details['text-font-size'],
                 'fontFile'=>WWW_ROOT.'fonts/Futura-Std-Book.ttf'])  
                 ->toScreen();                               
             } catch(Exception $err) {

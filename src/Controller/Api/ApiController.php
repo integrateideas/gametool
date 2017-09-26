@@ -37,10 +37,10 @@ class ApiController extends Controller
     parent::initialize();
     $this->loadComponent('RequestHandler');
     $this->loadComponent('Flash');
-    $this->loadComponent('Auth', [
-          'authorize' => 'Controller',
-            'unauthorizedRedirect' => false
-        ]);
+    // $this->loadComponent('Auth', [
+    //       'authorize' => 'Controller',
+    //         'unauthorizedRedirect' => false
+    //     ]);
   }
 
   public function beforeFilter(Event $event)

@@ -19,10 +19,8 @@
 <head>
 	<meta property="og:locale" content="en_US" />
 	<meta property="og:type" content="article" />
-	<meta property="og:title" content="Trivia Game | <?= $activeChallenge->name ?>" />
+	 <meta property="og:title" content="Trivia Game | <?= $activeChallenge->name ?>" />
 	<meta property="og:url" content="<?= $activeChallenge->url ?>" />
-	<meta property="og:site_name" content="Trivia Game | <?= $activeChallenge->name ?>" />
-	<meta property="article:section" content="APIs" />
 	<meta property="article:published_time" content="<?= $activeChallenge->created ?>" />
 	<meta property="article:modified_time" content="<?= $activeChallenge->modified ?>" />
 	<meta property="og:updated_time" content="<?= $activeChallenge->modified ?>" />
@@ -58,7 +56,7 @@
     <?= $this->fetch('script') ?>
 
 </head>
-<body>
+<body style="background-color: #fff">
     <!-- <nav class="top-bar expanded" data-topbar role="navigation">
         <ul class="title-area large-3 medium-4 columns">
             <li class="name">
@@ -93,4 +91,9 @@
  <?= $this->Html->script(['plugins/switchery/switchery'])?>
  <?= $this->fetch('scriptBottom'); ?>
 </body>
+<div class="text-center" style="bottom:0;">
+    <div>
+       &copy;<?php echo ' '.(date("Y")).'-'.(date("Y")+1).' '?>Twinspark Technology and Consulting LLP. All rights reserved.
+    </div>
+</div>
 </html>
