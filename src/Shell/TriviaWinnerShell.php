@@ -147,8 +147,8 @@ class TriviaWinnerShell extends Shell
                 ->text(ucfirst($winner->identifier_value),['color'=> $activeChallenge->image_details['text-color'], 
                   'anchor'=> $activeChallenge->image_details['text-position'],
                   'yOffset'=>80,
-                  'shadow'=>['x'=>2,'y'=>10,'color'=>$activeChallenge->image_details['text-shadow-color']],
-                  'size'=> $activeChallenge->image_details['text-font-size']*2,
+                  'shadow'=>['x'=>2,'y'=>4,'color'=>$activeChallenge->image_details['text-shadow-color']],
+                  'size'=> $activeChallenge->image_details['text-font-size'],
                   'fontFile'=>WWW_ROOT.'fonts/Futura-Std-Book.ttf'])  
                 ->toFile(WWW_ROOT.'/challenge_images/trivia_post_winner_fb_98765.png', 'image/png');
 
@@ -162,7 +162,7 @@ class TriviaWinnerShell extends Shell
                 ];
                 
                 $triviaWinnerPoints = $this->_rewardPoints($winner);
-                pr($triviaWinnerPoints); die;
+                pr($triviaWinnerPoints);
                 $response =  $this->_fb->post($url,$data, $winner->fb_practice_information->page_token);
               } catch(Exception $err) {
                 pr($err->getMessage());
