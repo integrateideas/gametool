@@ -29,7 +29,7 @@
                                 ?>
                             </div>
                             <div class="form-group">
-                                <?= $this->Form->label('image_path', __('Image Upload'), ['class' => 'col-sm-2 control-label']); ?>
+                                <?= $this->Form->label('image_path', __('Game Header Image'), ['class' => 'col-sm-2 control-label']); ?>
                                 <div class="col-sm-4">
                                     <div class="img-thumbnail">
                                         <?= $this->Html->image($challenge->image_url, array('height' => 100, 'width' => 100,'id'=>'upload-img')); ?>
@@ -37,25 +37,6 @@
                                     <?= $this->Form->input('image_name', ['accept'=>"image/*",'label' => false,'required' => true,['class' => 'form-control'],'type' => "file",'id'=>'imgChange']); ?>
                                 </div>
                             </div>
-                            <?= $this->Form->control('image_details.text-color', ['required' => true]);?>
-                            <?= $this->Form->control('image_details.text-shadow-color', ['required' => true]);?>
-                            <div class="hr-line-dashed"></div>
-                            <div>
-                                <?php 
-                                        $positions = [
-                                                        'top' => 'Top',
-                                                        'center' => 'Center',
-                                                        'left' => 'Left',
-                                                        'right' => 'Right',
-                                                        'top left' => 'Top-Left',
-                                                        'top right' => 'Top-Right'  
-
-                                                     ]; 
-                                echo $this->Form->control('image_details.text-position', ['options' => $positions, 'empty' => '---Please Select---', 'required' => true]);
-                                ?>
-                            </div>
-                            <?= $this->Form->control('image_details.text-font-size', ['min' => 50, 'required' => true]);?>
-                            <div class="hr-line-dashed"></div>
                             <div class="form-group" id="data_1">
                                 <label class="col-sm-2 control-label">
                                         Start Time
@@ -71,7 +52,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="hr-line-dashed"></div>
+                            
                             <div class="form-group" id="data_1">
                                 <label class="col-sm-2 control-label">
                                         End Time
@@ -87,7 +68,14 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="hr-line-dashed"></div>
+                            <div class="form-group">
+                                <?= $this->Form->label('timezone', __('Time Zone'), ['class' => ['col-sm-2', 'control-label']]); ?>
+                                <div class="col-sm-10">
+
+                                  <?= $this->Form->select('timezone', $timeZoneList ,['default'=>'UTC','label' => false, 'class' => ['form-control']]); ?>
+                                </div>
+                            </div>
+                            
                         <div id = "read-article" style = "display: none;">
                             <?php
                                 $question_type = [
@@ -130,6 +118,23 @@
                             <!-- <?php    
                                 echo $this->Form->control('is_active');
                             ?> -->
+                             <?= $this->Form->control('image_details.text-color', ['required' => true]);?>
+                            <?= $this->Form->control('image_details.text-shadow-color', ['required' => true]);?>
+                            <div>
+                                <?php 
+                                        $positions = [
+                                                        'top' => 'Top',
+                                                        'center' => 'Center',
+                                                        'left' => 'Left',
+                                                        'right' => 'Right',
+                                                        'top left' => 'Top-Left',
+                                                        'top right' => 'Top-Right'  
+
+                                                     ]; 
+                                echo $this->Form->control('image_details.text-position', ['options' => $positions, 'empty' => '---Please Select---', 'required' => true]);
+                                ?>
+                            </div>
+                            <?= $this->Form->control('image_details.text-font-size', ['min' => 50, 'required' => true]);?>
                             <div class="form-group">
                                 <?= $this->Form->label('is_active', __('Active'), ['class' => ['col-sm-2', 'control-label'], 'id' => 'is_active']) ?>
                                 <?= $this->Form->checkbox('is_active', ['label' => false, 'class' => ['form-control']]); ?>

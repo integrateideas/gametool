@@ -66,7 +66,7 @@
                                 <div class="col-sm-7">
                                     <div class="form-group">
                                         <div class='input-group date' id='datetimepicker'>
-                                            <input type='text' class="form-control" name="start_time" required="true" value="<?= $startDate ?>">
+                                            <input type='text' class="form-control" name="start_time" required="true">
                                             <span class="input-group-addon">
                                                 <span class="glyphicon glyphicon-calendar" ></span>
                                             </span>
@@ -91,6 +91,13 @@
                                 </div>
                             </div>
                             <div class="hr-line-dashed"></div>
+                            <div class="form-group">
+                            <?= $this->Form->label('timezone', __('Time Zone'), ['class' => ['col-sm-2', 'control-label']]); ?>
+                            <div class="col-sm-10">
+
+                              <?= $this->Form->select('timezone', $timeZoneList ,['default'=>'UTC','label' => false, 'class' => ['form-control'],'value' => $timezone]); ?>
+                            </div>
+                          </div>
                         <div id = "read-article" >
                             <?php
                                 $question_type = [
