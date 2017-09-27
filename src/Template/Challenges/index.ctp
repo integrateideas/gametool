@@ -24,27 +24,46 @@
                                         <th scope="col"><?= $this->Paginator->sort('name') ?></th>
                                         <th scope="col"><?= $this->Paginator->sort('response') ?></th>
                                         <th scope="col"><?= $this->Paginator->sort('is_active') ?></th>
-                                        <th scope="col"><?= $this->Paginator->sort('created') ?></th>
-                                        <th scope="col"><?= $this->Paginator->sort('modified') ?></th>
+                                        <th scope="col"><?= $this->Paginator->sort('start_time') ?></th>
+                                        <th scope="col"><?= $this->Paginator->sort('end_time') ?></th>
                                         <th scope="col" class="actions"><?= __('Actions') ?></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($challenges as $key => $challenge): ?>
+                        <?php foreach ($challenges as $key => $challenge):
+                        $tz_from = 'UTC';
+                        $tz_to = $challenge->timezone;
+                        // Converting start-time into given Timezone.
+                        $startTime = $challenge->start_time;
+                        $start = new \DateTime($startTime, new \DateTimeZone($tz_from));
+                        $start = $start->setTimeZone(new \DateTimeZone($tz_to))->format('Y-m-d H:i:s');
+
+                        // Converting end-time into given Timezone.
+                        $endTime = $challenge->end_time;
+                        $end = new \DateTime($endTime, new \DateTimeZone($tz_from));
+                        $end = $end->setTimeZone(new \DateTimeZone($tz_to))->format('Y-m-d H:i:s');
+
+                        ?>
                         <tr>
                                         <td><?= h($key + 1) ?></td>
                                         <td><?= h($challenge->challenge_type->name)?></td>
                                         <td><?= h($challenge->name) ?></td>
                                         <td><?= h($challenge->response) ?></td>
                                         <td><?= h($challenge->is_active) ?></td>
-                                        <td><?= h($challenge->created) ?></td>
-                                        <td><?= h($challenge->modified) ?></td>
-                                        <td class="actions">
-                                <?= $this->Html->link(__('View'), ['action' => 'view', $challenge->id]) ?>
-                                <?= $this->Html->link(__('Edit'), ['action' => 'edit', $challenge->id]) ?>
-                                <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $challenge->id], ['confirm' => __('Are you sure you want to delete # {0}?', $challenge->id)]) ?>
-                            </td>
+                                        <td><?= h($start) ?></td>
+                                        <td><?= h($end) ?></td>
+                            <td class="actions">
+                                            <?= '<a href='.$this->Url->build(['action' => 'view', $challenge->id]).' class="btn btn-xs btn-success">' ?>
+                                                <i class="fa fa-eye fa-fw"></i>
+                                            </a>
+                                            <?= '<a href='.$this->Url->build(['action' => 'edit', $challenge->id]).' class="btn btn-xs btn-warning"">' ?>
+                                                <i class="fa fa-pencil fa-fw"></i>
+                                            </a>
+                                            <?= $this->Form->postLink(__(''), ['action' => 'delete', $challenge->id], ['confirm' => __('Are you sure you want to delete # {0}?', $challenge->id), 'class' => ['btn', 'btn-sm', 'btn-danger', 'fa', 'fa-trash-o', 'fa-fh']]) ?>
+                                            </a>
+                                        </td>
                         </tr>
+
                         <?php endforeach; ?>
                     </tbody>
                 </table>
