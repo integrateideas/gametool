@@ -19,7 +19,7 @@
 <head>
 	<meta property="og:locale" content="en_US" />
 	<meta property="og:type" content="article" />
-	 <meta property="og:title" content="Trivia Game | <?= $activeChallenge->name ?>" />
+	 <meta property="og:title" content="Weekly Challenge | <?= $activeChallenge->name ?>" />
 	<meta property="og:url" content="<?= $activeChallenge->url ?>" />
 	<meta property="article:published_time" content="<?= $activeChallenge->created ?>" />
 	<meta property="article:modified_time" content="<?= $activeChallenge->modified ?>" />
