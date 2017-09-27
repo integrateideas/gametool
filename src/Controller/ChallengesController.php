@@ -78,7 +78,7 @@ class ChallengesController extends AppController
      * @return \Cake\Http\Response|null Redirects on successful add, renders view otherwise.
      */
     private function _checkActiveChallenge(){
-        $getChallenges = $this->Challenges->find()->where(['is_active' => 1])->first();
+        $getChallenges = $this->Challenges->findByUserId($this->Auth->user('id'))->where(['is_active' => 1])->first();
         // pr($getChallenges);die;
         
             if($getChallenges){
@@ -201,25 +201,29 @@ class ChallengesController extends AppController
         $this->viewBuilder()->layout('facebookuser');
         $chId  = (isset($this->request->query['chId']))?$this->request->query['chId']:null;
         $pageId  = (isset($this->request->query['p']))?$this->request->query['p']:null;
-        if(!$pageId){
+        if(!$pageId || !$chId){
             $this->Flash->error(__('Invalid Request'));   
             return $this->redirect(['action' => 'error']);
         }
 
-        if(!$chId){
-            $activeChallenge = $this->Challenges->find()
-            ->where(['is_active' => 1])
-            ->first();    
-        }else{
+        // if(!$chId){
+        //     $activeChallenge = $this->Challenges->find()
+        //     ->where(['is_active' => 1])
+        //     ->all();
 
-            $activeChallenge = $this->Challenges->findById($chId)
-            ->first();
+        // }else{
 
-            // if(!$activeChallenge->is_active){
-            //     return $this->redirect(['action' => 'winner', '?'=>['chId' => $chId, 'p' => $pageId]]);
-            // }  
+        //     $activeChallenge = $this->Challenges->findById($chId)
+        //     ->first();
+
+        //     // if(!$activeChallenge->is_active){
+        //     //     return $this->redirect(['action' => 'winner', '?'=>['chId' => $chId, 'p' => $pageId]]);
+        //     // }  
             
-        }
+        // }
+         $activeChallenge = $this->Challenges->findById($chId)
+                                            ->first();
+        // pr($activeChallenge); die;
         $challengeEndTime = $activeChallenge->end_time->setTimezone($activeChallenge->timezone)->format('Y-m-d h:i:s');
         if(!$activeChallenge->is_active){
             return $this->redirect(['action' => 'winner', 'chId' => $chId, 'p' => $pageId]);
