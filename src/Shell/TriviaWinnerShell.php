@@ -81,9 +81,7 @@ class TriviaWinnerShell extends Shell
     }
     
     private  function _triviaWinner($activeChallengeId){
-      // pr('m here'); die;
-        // $this->FbGraphApi =  new FbGraphApiComponent(new ComponentRegistry(), []);
-        // $this->loadComponent('FbGraphApi'); 
+    
       $this->loadModel('UserChallengeResponses');
       $userResponses = $this->UserChallengeResponses->findByChallengeId($activeChallengeId)
       ->where(['status' => 1])
@@ -216,7 +214,7 @@ class TriviaWinnerShell extends Shell
 
           }
 
-          public function endChallenge(){
+          public function endChallenge($isAdminRequest = false){
            $this->loadModel('Challenges');
            $activeChallenge = $this->Challenges->find()
                                                ->where(['is_active'=> 1])
@@ -230,7 +228,7 @@ class TriviaWinnerShell extends Shell
 
           $activeChallengeEndTime = $activeChallenge['end_time'];
           $activeChallengeEndTime = strtotime($activeChallengeEndTime);
-          if($currentTime >= $activeChallengeEndTime){
+          if($currentTime >= $activeChallengeEndTime || $isAdminRequest){
             $data = [
             'id' => $activeChallenge['id'],
             'is_active' => 0
