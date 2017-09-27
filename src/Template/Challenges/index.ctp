@@ -26,6 +26,7 @@
                                         <th scope="col"><?= $this->Paginator->sort('is_active') ?></th>
                                         <th scope="col"><?= $this->Paginator->sort('start_time') ?></th>
                                         <th scope="col"><?= $this->Paginator->sort('end_time') ?></th>
+                                        <th scope="col"><?= $this->Paginator->sort('timezone') ?></th>
                                         <th scope="col" class="actions"><?= __('Actions') ?></th>
                         </tr>
                     </thead>
@@ -52,6 +53,7 @@
                                         <td><?= h($challenge->is_active) ?></td>
                                         <td><?= h($start) ?></td>
                                         <td><?= h($end) ?></td>
+                                        <td><?= h($challenge->timezone) ?></td>
                             <td class="actions">
                                             <?= '<a href='.$this->Url->build(['action' => 'view', $challenge->id]).' class="btn btn-xs btn-success">' ?>
                                                 <i class="fa fa-eye fa-fw"></i>
