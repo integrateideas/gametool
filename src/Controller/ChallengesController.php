@@ -257,40 +257,11 @@ class ChallengesController extends AppController
     public function postWinner(){
 
         $tr = new TriviaWinnerShell();
-        $tr->endChallenge();
+        $tr->endChallenge(true);
         $this->Flash->success(__('Challenge end Successfully.'));
         $this->Flash->success(__('Post Winner Successfully on Facebook.'));
         $this->redirect(['action' => 'index']);
     }
-    // public function userFbPosts(){
-
-    //     $this->loadComponent('FbGraphApi'); 
-    //     $getFbPages = $this->FbGraphApi->getPages(true);
-    //     // pr($getFbPages['response']);die;
-    //     $data = [];
-
-    //     foreach ($getFbPages['response'] as $key => $value) {
-    //         $data[] = [ 
-    //                     'page_token'=> $value->access_token,
-    //                     'page_id' => $value->id,
-    //                     'page_name' => $value->name,
-    //                     'user_id' =>$this->Auth->User('id'),
-    //                     'status' => $getFbPages['status']
-    //                    ];
-    //     }
-
-    //     $this->loadModel('FbPracticeInformation');
-    //     $fbPageInfo = $this->FbPracticeInformation->newEntities($data);
-    //     $fbPageInfo = $this->FbPracticeInformation->patchEntities($fbPageInfo, $data);
-    //     if ($this->FbPracticeInformation->saveMany($fbPageInfo)) {
-    //             pr($this->FbPracticeInformation->saveMany($fbPageInfo));die;
-    //         }else{
-    //             pr('There is an error while saving data.');
-    //         }
-
-    //     $response = $this->FbGraphApi->postOnFb($data['fb_page_identifier'],$data['message'],$pageToken[$data['fb_page_identifier']]);
-
-    // }
 
     public function isAuthorized($user)
     {
@@ -299,6 +270,7 @@ class ChallengesController extends AppController
     }
 
     public function winner(){
+        $this->response->header("Content-Type: image/png");
         $this->viewBuilder()->layout('facebookuser');
         $challengeId = (isset($this->request->query['chId']))?$this->request->query['chId']:null;
         $pageId = (isset($this->request->query['p']))?$this->request->query['p']:null;
@@ -347,7 +319,8 @@ class ChallengesController extends AppController
                 'shadow'=>['x'=>2,'y'=>4,'color'=>$activeChallenge->image_details['text-shadow-color']],
                   'size'=> $activeChallenge->image_details['text-font-size'],
                 'fontFile'=>WWW_ROOT.'fonts/Futura-Std-Book.ttf'])  
-                ->toScreen();                               
+                ->toScreen();  
+            die;                             
             } catch(Exception $err) {
               echo $err->getMessage();
             }
