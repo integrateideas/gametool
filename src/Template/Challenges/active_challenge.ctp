@@ -80,7 +80,12 @@
                         $('#submitResponse').on('click',function(){
                             
                             var challengeId = $('#challenge_id').val();
-                            var value = $('#name').val();
+                            // var value = $('#name').val();
+                            if($( 'input[name=radio]:checked' ).val()){
+                               var value = $( 'input[name=radio]:checked' ).val();
+                            }else if($('#name').val()){
+                                var value = $('#name').val();
+                            }
                             if(value.length <=0 ){
                                 $('#validInput').show();
                                 return false;
