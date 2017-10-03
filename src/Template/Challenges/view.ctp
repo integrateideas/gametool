@@ -11,9 +11,11 @@
         <div class="ibox-title">
             <h2><?= h($challenge->name) ?></h2>
         </div> <!-- ibox-title end-->
+        <?php if($challenge->is_active == 1){?>
          <div class="ibox-title">
-            share this url: <h2><?= h($url) ?></h2>
+            Share this URL on Facebook via Social Suite: <h2><?= h($url) ?></h2>
         </div> <!-- ibox-title end-->
+        <?php }?>
         <div class="ibox-content">
     <table class="table">
         <tr>
