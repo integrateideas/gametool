@@ -206,10 +206,10 @@ class TriviaWinnerShell extends Shell
               }else{
                   $version = "BuzzyDoc 2.0" ;
               }
-                         $emailText = $emailText.'<tr><td>'.$value->identifier_value.'</td><td>'.$value->fb_practice_information->practice_name.'</td><td>'.$version.'</td></tr>';
+                         $emailText = $emailText.'<tr><td>'.$value->fb_practice_information->practice_name.'</td><td>'.$version.'</td><td>'.$value->identifier_value.'</td></tr>';
             }
 
-            $emailText ='<h5>The list of winners are given bellow:</h5><br><table class = "table"><thead><tr><td><b>Winner Name&nbsp;</b></td><td><b>Practice Name&nbsp;<b></td><td><b>Buzzydoc Version&nbsp;<b></td></tr></thead><tbody>'.$emailText.'</tbody>';
+            $emailText ='<h4>The list of winners are given bellow:</h4><br><table class = "table"><thead><tr></td><td><b>Practice Name&nbsp;<b></td><td><b>Buzzydoc Version&nbsp;<b></td><td><b>Winner Name&nbsp;</b></tr></thead><tbody>'.$emailText.'</tbody>';
 
             $email = new Email();
             $email->to("sunpreet.kaur@twinspark.co")
