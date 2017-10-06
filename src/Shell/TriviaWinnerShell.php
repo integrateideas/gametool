@@ -22,6 +22,7 @@ use Cake\Core\Configure;
 use Cake\Routing\Router;
 use Cake\Http\Client;
 use Cake\I18n\Time;
+use Cake\Mailer\Email;
 
 
 
@@ -82,7 +83,6 @@ class TriviaWinnerShell extends Shell
     }
     
     private  function _triviaWinner($activeChallengeId){
-    
       $this->loadModel('UserChallengeResponses');
       $userResponses = $this->UserChallengeResponses->findByChallengeId($activeChallengeId)
       ->where(['status' => 1])
@@ -125,18 +125,19 @@ class TriviaWinnerShell extends Shell
             $result = $newData[$triviaWinner];   
           }   
         }
+        $data[] = [
+        'fb_practice_information_id' => $result->fb_practice_information_id,
+        'identifier_type' => $result->identifier_type,
+        'identifier_value' => $result->identifier_value,
+        'challenge_id' => $activeChallengeId,
+        ];
       }
+      // pr($result); die;
 
-      $data = [
-      'fb_practice_information_id' => $result->fb_practice_information_id,
-      'identifier_type' => $result->identifier_type,
-      'identifier_value' => $result->identifier_value,
-      'challenge_id' => $activeChallengeId,
-      ];
-
-      $newEntity = $this->ChallengeWinners->newEntity();
-      $activeChallengeWinner = $this->ChallengeWinners->patchEntity($newEntity, $data);
-      if($this->ChallengeWinners->save($activeChallengeWinner)){
+      // pr($data); die;
+      $newEntity = $this->ChallengeWinners->newEntities($data);
+      $activeChallengeWinner = $this->ChallengeWinners->patchEntities($newEntity, $data);
+      if($this->ChallengeWinners->saveMany($activeChallengeWinner)){
         echo "Active Challenge Winner saved successfully";
       }else{
         echo "Something went wrong while saving data.";
@@ -144,16 +145,17 @@ class TriviaWinnerShell extends Shell
     }
 
     private function _postWinnerOnFb($activeChallengeId){
-
      $activeChallenge = $this->Challenges->find()
-     ->contain(['ChallengeWinners','ChallengeWinners.FbPracticeInformation'])
-     ->where(['id'=>$activeChallengeId])
-     ->first();
+                                         ->contain(['ChallengeWinners','ChallengeWinners.FbPracticeInformation'])
+                                         ->where(['id'=>$activeChallengeId])
+                                         ->first();
+
      $this->_fb = new \Facebook\Facebook([
       'app_id' => Configure::read('application.fbAppId'),
       'app_secret' =>Configure::read('application.fbAppSecret'),
       'default_graph_version' => 'v2.9',
       ]);
+
 
      foreach ($activeChallenge->challenge_winners as $key => $winner) {
       try {
@@ -184,18 +186,40 @@ class TriviaWinnerShell extends Shell
                 'caption'=>'Winner of the challenge named '.$activeChallenge->name .'is: '.$winner->identifier_value,
                 'url'=>$fileUrl
                 ];
-                
-                $triviaWinnerPoints = $this->_rewardPoints($winner);
-                pr($triviaWinnerPoints);
+                // $triviaWinnerPoints = $this->_rewardPoints($winner);
+                // pr($triviaWinnerPoints);
                 $response =  $this->_fb->post($url,$data, $winner->fb_practice_information->page_token);
               } catch(Exception $err) {
                 pr($err->getMessage());
               }
             }
+
+            $sendMail = $this->_sendEmail($activeChallenge);
+            
+          }
+
+          private function _sendEmail($challenge){
+            $emailText = "";
+            foreach ($challenge->challenge_winners as $key => $value) {
+              if(isset($value->fb_practice_information->is_old_buzzydoc) && !empty($value->fb_practice_information->is_old_buzzydoc)){
+                  $version = "BuzzyDoc 3.0" ;
+              }else{
+                  $version = "BuzzyDoc 2.0" ;
+              }
+                         $emailText = $emailText.'<tr><td>'.$value->identifier_value.'</td><td>'.$value->fb_practice_information->practice_name.'</td><td>'.$version.'</td></tr>';
+            }
+
+            $emailText ='<h5>The list of winners are given bellow:</h5><br><table class = "table"><thead><tr><td><b>Winner Name&nbsp;</b></td><td><b>Practice Name&nbsp;<b></td><td><b>Buzzydoc Version&nbsp;<b></td></tr></thead><tbody>'.$emailText.'</tbody>';
+
+            $email = new Email();
+            $email->to("sunpreet.kaur@twinspark.co")
+                  ->subject("Winner of Challenge ".$challenge->name." on ".$challenge->start_time->format('d-m-Y'))
+                  ->emailFormat('html')
+                  ->send($emailText);
+            
           }
 
           private function _rewardPoints($challengeWinner){
-
             $this->loadModel('FbPracticeInformation');
             $vendorId = $this->FbPracticeInformation->findById($challengeWinner->fb_practice_information_id)
                                                   ->first()
@@ -207,7 +231,6 @@ class TriviaWinnerShell extends Shell
                         "identifier_value" => $challengeWinner->identifier_value
                     ];
 
-          
             $http = new Client();
             $response = $http->post(Configure::read('buzzydocApp.baseUrl'), json_encode($data));
             $response = json_decode($response->body());
@@ -238,7 +261,7 @@ class TriviaWinnerShell extends Shell
 
             if($this->Challenges->save($challenge)){
               echo "Challenge end Successfully";
-              $this->_triviaWinner($activeChallenge['id']);
+              // $this->_triviaWinner($activeChallenge['id']);
               $this->_postWinnerOnFb($activeChallenge['id']);
               pr($challenge);
             }else{
