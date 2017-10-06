@@ -51,6 +51,8 @@ class ChallengesController extends AppController
         $this->set('_serialize', ['challenges']);
     }
 
+    
+
     /**
      * View method
      *
@@ -76,7 +78,7 @@ class ChallengesController extends AppController
      * @return \Cake\Http\Response|null Redirects on successful add, renders view otherwise.
      */
     private function _checkActiveChallenge(){
-        $getChallenges = $this->Challenges->find()->where(['is_active' => 1])->first();
+        $getChallenges = $this->Challenges->findByUserId($this->Auth->user('id'))->where(['is_active' => 1])->first();
         // pr($getChallenges);die;
         
             if($getChallenges){
@@ -103,17 +105,21 @@ class ChallengesController extends AppController
             }
             $this->request->data['image_name']['name'] = str_replace(' ', '_', $this->request->data['image_name']['name']);
             $this->request->data['user_id'] = $this->Auth->user('id');
-            
+            //provided timezone
+            $tz_from = $this->request->data['timezone'];
+            $tz_to = 'UTC';
             // Converting start-time into UTC Timezone.
             $startTime = $this->request->data['start_time'];
-            $start_datetime = new Time($startTime);
-            $this->request->data['start_time'] = $start_datetime;
+            $start = new \DateTime($startTime, new \DateTimeZone($tz_from));
+            $start = $start->setTimeZone(new \DateTimeZone($tz_to));
+            $this->request->data['start_time'] = $start;
 
             // Converting end-time into UTC Timezone.
             $endTime = $this->request->data['end_time'];
-            $end_datetime = new Time($endTime);
-            $this->request->data['end_time'] = $end_datetime;
-            
+            $end = new \DateTime($endTime, new \DateTimeZone($tz_from));
+            $end = $end->setTimeZone(new \DateTimeZone($tz_to));
+            $this->request->data['end_time'] = $end;
+
             $challenge = $this->Challenges->patchEntity($challenge, $this->request->getData());
             
                 if ($this->Challenges->save($challenge)) {
@@ -128,6 +134,7 @@ class ChallengesController extends AppController
         }
         $challengeTypes = $this->Challenges->ChallengeTypes->find('list', ['limit' => 200]);
         $this->set(compact('challenge', 'challengeTypes'));
+        $this->set('timeZoneList',array_flip($this->_getTimeZoneList()));
         $this->set('_serialize', ['challenge']);
     }
 
@@ -144,28 +151,8 @@ class ChallengesController extends AppController
         $challenge = $this->Challenges->get($id, [
             'contain' => []
             ]);
-        
-        // if($activeDisable == $id){
-        //     pr('here');die;
-        // }else{
-        //     pr('there');die;
-        // }
-        // pr($challenge->end_time);die;
-        // $date = new \DateTime($challenge->end_time);
-        // $date = $date->format('m/d/Y H:i A');
-        $endDateTimstamp = strtotime($challenge->end_time);
-        // $endDateTimstamp = $endDateTimstamp;
-        // $this->request->data['end_time'] = $new_date;
-        // pr($this->request->data['end_time']);die;
-        // die;
-
-        $startDate = new \DateTime($challenge->start_time);
-        $startDate = $startDate->format('m/d/Y H:i A');
-
-        $date = new \DateTime($challenge->end_time);
-        $date = $date->format('m/d/Y H:i A');
-
-        // pr($date);die;
+        // pr($challenge->timezone);die;
+        $timezone = $challenge->timezone;
         //If old image is available, unlink the path(and delete the image) and and  upload image from "upload" folder in webroot.
         $oldImageName = $challenge->image_name;
         $path = Configure::read('ImageUpload.uploadPathForChallengeImages');
@@ -184,7 +171,8 @@ class ChallengesController extends AppController
         }
         $challengeTypes = $this->Challenges->ChallengeTypes->find('list', ['limit' => 200]);
 
-        $this->set(compact('challenge', 'challengeTypes','date', 'startDate'));
+        $this->set(compact('challenge', 'challengeTypes','date', 'startDate','timezone'));
+        $this->set('timeZoneList',array_flip($this->_getTimeZoneList()));
         $this->set('_serialize', ['challenge']);
     }
 
@@ -213,25 +201,29 @@ class ChallengesController extends AppController
         $this->viewBuilder()->layout('facebookuser');
         $chId  = (isset($this->request->query['chId']))?$this->request->query['chId']:null;
         $pageId  = (isset($this->request->query['p']))?$this->request->query['p']:null;
-        if(!$pageId){
+        if(!$pageId || !$chId){
             $this->Flash->error(__('Invalid Request'));   
             return $this->redirect(['action' => 'error']);
         }
 
-        if(!$chId){
-            $activeChallenge = $this->Challenges->find()
-            ->where(['is_active' => 1])
-            ->first();    
-        }else{
+        // if(!$chId){
+        //     $activeChallenge = $this->Challenges->find()
+        //     ->where(['is_active' => 1])
+        //     ->all();
 
-            $activeChallenge = $this->Challenges->findById($chId)
-            ->first();
+        // }else{
 
-            // if(!$activeChallenge->is_active){
-            //     return $this->redirect(['action' => 'winner', '?'=>['chId' => $chId, 'p' => $pageId]]);
-            // }  
+        //     $activeChallenge = $this->Challenges->findById($chId)
+        //     ->first();
+
+        //     // if(!$activeChallenge->is_active){
+        //     //     return $this->redirect(['action' => 'winner', '?'=>['chId' => $chId, 'p' => $pageId]]);
+        //     // }  
             
-        }
+        // }
+         $activeChallenge = $this->Challenges->findById($chId)
+                                            ->first();
+        // pr($activeChallenge); die;
         $challengeEndTime = $activeChallenge->end_time->setTimezone($activeChallenge->timezone)->format('Y-m-d h:i:s');
         if(!$activeChallenge->is_active){
             return $this->redirect(['action' => 'winner', 'chId' => $chId, 'p' => $pageId]);
@@ -267,41 +259,13 @@ class ChallengesController extends AppController
 
    
     public function postWinner(){
+
         $tr = new TriviaWinnerShell();
-        $tr->endChallenge();
+        $tr->endChallenge(true);
         $this->Flash->success(__('Challenge end Successfully.'));
         $this->Flash->success(__('Post Winner Successfully on Facebook.'));
         $this->redirect(['action' => 'index']);
     }
-    // public function userFbPosts(){
-
-    //     $this->loadComponent('FbGraphApi'); 
-    //     $getFbPages = $this->FbGraphApi->getPages(true);
-    //     // pr($getFbPages['response']);die;
-    //     $data = [];
-
-    //     foreach ($getFbPages['response'] as $key => $value) {
-    //         $data[] = [ 
-    //                     'page_token'=> $value->access_token,
-    //                     'page_id' => $value->id,
-    //                     'page_name' => $value->name,
-    //                     'user_id' =>$this->Auth->User('id'),
-    //                     'status' => $getFbPages['status']
-    //                    ];
-    //     }
-
-    //     $this->loadModel('FbPracticeInformation');
-    //     $fbPageInfo = $this->FbPracticeInformation->newEntities($data);
-    //     $fbPageInfo = $this->FbPracticeInformation->patchEntities($fbPageInfo, $data);
-    //     if ($this->FbPracticeInformation->saveMany($fbPageInfo)) {
-    //             pr($this->FbPracticeInformation->saveMany($fbPageInfo));die;
-    //         }else{
-    //             pr('There is an error while saving data.');
-    //         }
-
-    //     $response = $this->FbGraphApi->postOnFb($data['fb_page_identifier'],$data['message'],$pageToken[$data['fb_page_identifier']]);
-
-    // }
 
     public function isAuthorized($user)
     {
@@ -310,6 +274,7 @@ class ChallengesController extends AppController
     }
 
     public function winner(){
+        $this->response->header("Content-Type: image/png");
         $this->viewBuilder()->layout('facebookuser');
         $challengeId = (isset($this->request->query['chId']))?$this->request->query['chId']:null;
         $pageId = (isset($this->request->query['p']))?$this->request->query['p']:null;
@@ -358,7 +323,8 @@ class ChallengesController extends AppController
                 'shadow'=>['x'=>2,'y'=>4,'color'=>$activeChallenge->image_details['text-shadow-color']],
                   'size'=> $activeChallenge->image_details['text-font-size'],
                 'fontFile'=>WWW_ROOT.'fonts/Futura-Std-Book.ttf'])  
-                ->toScreen();                               
+                ->toScreen();  
+            die;                             
             } catch(Exception $err) {
               echo $err->getMessage();
             }

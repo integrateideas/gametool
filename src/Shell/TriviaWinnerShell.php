@@ -21,6 +21,7 @@ use Cake\Collection\Collection;
 use Cake\Core\Configure;
 use Cake\Routing\Router;
 use Cake\Http\Client;
+use Cake\I18n\Time;
 
 
 
@@ -54,11 +55,34 @@ class TriviaWinnerShell extends Shell
     {
       $this->out($this->OptionParser->help());
     }
+
+    public function startChallenge(){
+        $currentTime = Time::now();
+        $currentTime = $currentTime->format('Y-m-d H:i');
+        $this->loadModel('Challenges');
+        $allChallenges =   $this->Challenges->find()->all();
+
+        foreach ($allChallenges as $key => $value) {
+            $startTime = $value->start_time->format('Y-m-d H:i');
+            $endTime = $value->end_time->format('Y-m-d H:i');
+            if($currentTime >= $startTime && $currentTime <= $endTime){
+                $data = [
+                            'id' => $value->id,
+                            'is_active' => 1
+                        ];
+
+                $challenge = $this->Challenges->patchEntity($value, $data);
+            }
+        }
+        if($this->Challenges->save($challenge)){
+            echo "Challenge has been active successfully";
+        }else{
+            echo "Something went wrong while saving data.";
+        }  
+    }
     
     private  function _triviaWinner($activeChallengeId){
-      // pr('m here'); die;
-        // $this->FbGraphApi =  new FbGraphApiComponent(new ComponentRegistry(), []);
-        // $this->loadComponent('FbGraphApi'); 
+    
       $this->loadModel('UserChallengeResponses');
       $userResponses = $this->UserChallengeResponses->findByChallengeId($activeChallengeId)
       ->where(['status' => 1])
@@ -191,7 +215,7 @@ class TriviaWinnerShell extends Shell
 
           }
 
-          public function endChallenge(){
+          public function endChallenge($isAdminRequest = false){
            $this->loadModel('Challenges');
            $activeChallenge = $this->Challenges->find()
                                                ->where(['is_active'=> 1])
@@ -205,7 +229,7 @@ class TriviaWinnerShell extends Shell
 
           $activeChallengeEndTime = $activeChallenge['end_time'];
           $activeChallengeEndTime = strtotime($activeChallengeEndTime);
-          if($currentTime >= $activeChallengeEndTime){
+          if($currentTime >= $activeChallengeEndTime || $isAdminRequest){
             $data = [
             'id' => $activeChallenge['id'],
             'is_active' => 0
@@ -222,6 +246,8 @@ class TriviaWinnerShell extends Shell
             }      
           }
         }
+
+        
       }
 
 

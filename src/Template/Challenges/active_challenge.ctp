@@ -60,7 +60,6 @@
                                     <div class="form-group">
                                         <div class="col-sm-4 col-sm-offset-4 text-center">
                                             <input type="button" id="submitResponse" value="Submit" name="submit" class = "btn btn-primary" >
-                                            <input type="button" value="Cancel" name="cancel" class = "btn btn-danger">
                                         </div>
                                     </div>
                                 </div>
@@ -69,6 +68,12 @@
                                         <h2 class="text-center"><b> Your Response has been successfully submitted.<br> Result will be available on <?= $challengeEndTime ?>.</b></h2>
                                     </div>
                                     <div class="fb-share-button text-center m-t-md" data-href="<?= $activeChallenge->url ?>" data-layout="button_count" data-size="small" data-mobile-iframe="true"><a class="fb-xfbml-parse-ignore btn btn-xs btn-success" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=<?= $activeChallenge->encodeUrl ?>&amp;src=sdkpreparse">Share</a></div> 
+                                </div>
+                                <div id = "cancelResponse" style="display: none;">
+                                    <div class="m-t-md text-center">
+                                        <h2 class="text-center"><b> Your Response has been successfully submitted.<br> Result will be available soon.</b></h2>
+                                    </div>
+                                    <!-- <div class="fb-share-button text-center m-t-md" data-href="<?= $activeChallenge->url ?>" data-layout="button_count" data-size="small" data-mobile-iframe="true"><a class="fb-xfbml-parse-ignore btn btn-xs btn-success" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=<?= $activeChallenge->encodeUrl ?>&amp;src=sdkpreparse">Share</a></div> --> 
                                 </div>
                             </div>
                             <?= $this->Form->end() ?>
@@ -80,7 +85,11 @@
                         $('#submitResponse').on('click',function(){
                             
                             var challengeId = $('#challenge_id').val();
-                            var value = $('#name').val();
+                            if($( 'input[name=radio]:checked' ).val()){
+                               var value = $( 'input[name=radio]:checked' ).val();
+                            }else if($('#name').val()){
+                                var value = $('#name').val();
+                            }
                             if(value.length <=0 ){
                                 $('#validInput').show();
                                 return false;
@@ -90,9 +99,16 @@
                         });
 
                         function xyz(challengeId, value){
-                            swal({ title: 'Enter your Buzzydoc Details',
+                            swal({ title: 'Enter your BuzzyDoc details',
                                html: 
                                '<input type = "radio" id="swal-input1" value="username" name="username" checked="checked">UserName'  +  '<input type = "radio" id="swal-input2" value="card_number" name="username">CardNo.',
+                               showCancelButton: true,
+                               confirmButtonColor: '#3085d6',
+                               cancelButtonColor: '#d33',
+                               confirmButtonClass: 'btn btn-success',
+                               showCancelButton: true,
+                               cancelButtonText: "I don't have a BuzzyDoc account",
+                               cancelButtonClass: 'btn btn-danger',
                                input: 'text',
                                inputValidator: function (value) {
                                 return new Promise(function (resolve, reject) {
@@ -106,6 +122,16 @@
                         }).then(function(identifierValue){
                             var identifierType = $('input[name=username]:checked' ).val();
                             response(identifierValue, identifierType, challengeId, value);
+                        },function(dismiss){
+                            if(dismiss == 'cancel'){
+                                swal(
+                                      '',
+                                      'You are not eligible to receive points.',
+                                      'info'
+                                    )
+                            }
+                            $(" #deleteData").remove();
+                            $(" #cancelResponse").show();
                         });
                     }
 
@@ -125,21 +151,19 @@
                             url : host + "api/userChallengeResponses/add",
                             data : {'data':data[0]}
                         })
-                        .success(function(response){
-                 // window.location.href = redirectUrl;
-                 swal({
-                    title : response.response.message,
-                    type : 'success',
-                    showConfirmButton : true
-                });
-                 console.log('after success');   
-                 console.log(response.response);
-                 $(" #deleteData").remove();
-                 $(" #afterResponse").show();
+                        .then(function(response){
+                             swal({
+                                title : response.response.message,
+                                type : 'success',
+                                showConfirmButton : true
+                            });
+                             console.log('after success');   
+                             console.log(response.response);
+                             $(" #deleteData").remove();
+                             $(" #afterResponse").show();
 
-             });
-                    }
-
-
-
-                </script>
+                         }, function(){
+                            console.log('error');
+                         });
+        }
+</script>
